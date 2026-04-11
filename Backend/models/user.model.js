@@ -26,18 +26,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    ownedFarms: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Farm"
-        }
-    ],
-    bookedPlots: [
-        {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "Plot"
-        }
-    ]
 },
     {
         timestamps: true
