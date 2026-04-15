@@ -30,7 +30,7 @@ export const signup = async (req,res)=>{
             email,
             password: hashedPassword,
             phone,
-            role
+            role: role === "farmer" ? "farmer" : "user"
         });
 
         const token = generateToken(user);
