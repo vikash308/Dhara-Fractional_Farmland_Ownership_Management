@@ -1,17 +1,15 @@
-import { useState } from "react"; 
+import { useState , useContext } from "react"; 
 import { NavLink } from "react-router";
 import { SlMenu } from "react-icons/sl";
 import { RxCross2 } from "react-icons/rx";
+import { SignupContext } from "../context/signupContext";
 
   function Navbar(){
-    const  [isLoggedIn, setIsLoggedIn] = useState(false);
+    const { user } = useContext(SignupContext);
     
     const [menu , setMenu] = useState(false);
-
-    function menuVisibility(){
-      setMenu(!menu);
-    }
-
+    
+    
     return<>
     <div className="flex justify-between h-14 items-center sticky top-0 bg-zinc-200 shadow-md">
 
@@ -24,7 +22,7 @@ import { RxCross2 } from "react-icons/rx";
     <NavLink to="/" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800 underline" : "text-black hover:text-green-800"}>Home</NavLink>
     <NavLink to="/about" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800 underline" : "text-black hover:text-green-800"}>About</NavLink>
     <NavLink to="/farms" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800 underline" : "text-black hover:text-green-800"}>Farms</NavLink>
-    {isLoggedIn ?<NavLink to="/dashboard" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800" : "text-black hover:text-green-800"}>Dashboard</NavLink> : <button className="text-sm w-30 bg-green-700 py-2 text-white rounded-lg hover:bg-green-800"><NavLink to="/signup">Login/Signup</NavLink></button>}
+    {user ?<NavLink to="/dashboard" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800" : "text-black hover:text-green-800"}>Dashboard</NavLink> : <button className="text-sm w-30 bg-green-700 py-2 text-white rounded-lg hover:bg-green-800"><NavLink to="/signup">Login/Signup</NavLink></button>}
       </div>
      
       <div className="p-10 lg:hidden transition-all duration-1000" onClick={()=>setMenu(!menu)}> {menu ? <RxCross2 className="size-5"/> : <SlMenu/>} </div>
@@ -35,7 +33,7 @@ import { RxCross2 } from "react-icons/rx";
     <NavLink to="/" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800 underline" : "text-black hover:text-green-800"}>Home</NavLink>
     <NavLink to="/about" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800 underline" : "text-black hover:text-green-800"}>About</NavLink>
     <NavLink to="/farms" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800 underline" : "text-black hover:text-green-800"}>Farms</NavLink>
-    {isLoggedIn ?<NavLink to="/dashboard" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800" : "text-black hover:text-green-800"}>Dashboard</NavLink> : <NavLink to="/signup" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800" : "text-black hover:text-green-800"}>Login/Signup</NavLink>}
+    {user ?<NavLink to="/dashboard" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800" : "text-black hover:text-green-800"}>Dashboard</NavLink> : <NavLink to="/signup" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800" : "text-black hover:text-green-800"}>Login/Signup</NavLink>}
       </div>
      
 
