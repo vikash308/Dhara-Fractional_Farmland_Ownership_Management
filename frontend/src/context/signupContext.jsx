@@ -1,14 +1,13 @@
 import { createContext, useState } from "react";
 import axios from 'axios';
-import {signupUrl} from '../api';
-
+import server from "../api";
 export const SignupContext = createContext();
 
 export const SignupProvider = ({children}) =>{
     const [user , setUser] = useState(null);
     const signup = async (username , role , email , password)=>{
         try{
-        const res = await axios.post(signupUrl,{
+        const res = await axios.post(server + "/signup",{
             username,
             role,
             email,
@@ -20,7 +19,7 @@ export const SignupProvider = ({children}) =>{
         console.log("Error : " , e);
     }
     }
-    return<SignupContext.Provider value={{ user, signup }}>
+    return<SignupContext.Provider value={{ user,setUser, signup }}>
         {children}
     </SignupContext.Provider>
    

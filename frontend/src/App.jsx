@@ -8,6 +8,7 @@ import Farms from './pages/Farms';
 import Booking from './pages/Booking';
 import Dashboard from './pages/Dashboard';
 import Footer from './components/Footer';
+import { ToastContainer } from 'react-toastify';
 
 function App(){
 
@@ -24,6 +25,7 @@ function App(){
     <Route path="/login" element={<Login />} />
   </Routes>
   <Footer/>
+  <ToastContainer toastClassName="w-[25px] text-sm p-2 mt-13" />
   </BrowserRouter>
   </>
 }

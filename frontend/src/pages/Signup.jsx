@@ -1,6 +1,8 @@
 import { useState, useContext } from "react";
 import { NavLink ,Navigate, useNavigate } from 'react-router-dom'
 import { SignupContext } from "../context/signupContext";
+import {toast} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"
 
 
 function Signup() {
@@ -15,13 +17,14 @@ function Signup() {
   const SubmitSignup = async (e) => {
     e.preventDefault();
     if(!role || !username || !email || !password){
-      alert("All fiels are mandatory"); }
+      toast.error("All fields are mandatory");
+    }
     else{
     try {
       await signup(username, role, email, password);
-      alert("Signup successfully");
+      toast.success("Signup successfully");
     } catch (e) {
-      console.log(e);
+      toast.error("Error occurred during signup");
     }
     if(role === 'user') navigate("/");
     else navigate('/farmer');
@@ -53,7 +56,6 @@ function Signup() {
         </div>
       </div>
     </div>
-    <h1>{role}</h1>
 
   </>
 }

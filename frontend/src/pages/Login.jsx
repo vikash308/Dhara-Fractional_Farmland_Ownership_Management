@@ -13,13 +13,13 @@ function Login() {
  const SubmitLogin = async (e) => {
     e.preventDefault();
     if(!email || !password){
-      alert("All fiels are mandatory"); }
+      toast.error("All fields are mandatory");}
     else{
     try {
       await login(email, password);
-      alert("Login successfully");
+      toast.success("Login successfully");
     } catch (e) {
-      console.log(e);
+      toast.error("Error occurred during login");
     }
     if(role === 'user') navigate("/");
     else navigate('/farmer');
