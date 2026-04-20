@@ -1,6 +1,9 @@
 import { useState, useContext } from "react";
 import { NavLink, Navigate, useNavigate } from 'react-router-dom';
 import { LoginContext } from "../context/loginContext";
+import {toast} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"
+
 
 
 function Login() {
@@ -16,13 +19,13 @@ function Login() {
       toast.error("All fields are mandatory");}
     else{
     try {
-      await login(email, password);
-      toast.success("Login successfully");
+      let res = await login(email, password);
+      toast.success(res.message);
+      if(res.user.role === 'user') navigate("/");
+      else navigate('/farmer');
     } catch (e) {
-      toast.error("Error occurred during login");
+      toast.error(e.message);
     }
-    if(role === 'user') navigate("/");
-    else navigate('/farmer');
   }
   }
 

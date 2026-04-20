@@ -11,10 +11,10 @@ export const LoginProvider = ({children}) => {
             email,
             password
         });
-        console.log("res.data", res.data);
         setLoginUser(res.data);
+        return res.data;
     }catch(e){
-        console.log("Error : " , e);
+        return e.response.data;
     }
     }
     return<LoginContext.Provider value={{loginUser , login}}>

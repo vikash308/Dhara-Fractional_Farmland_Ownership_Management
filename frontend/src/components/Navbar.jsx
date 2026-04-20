@@ -3,10 +3,12 @@ import { NavLink } from "react-router";
 import { SlMenu } from "react-icons/sl";
 import { RxCross2 } from "react-icons/rx";
 import { SignupContext } from "../context/signupContext";
+import { LoginContext } from "../context/loginContext";
 
   function Navbar(){
     const { user } = useContext(SignupContext);
-    
+    const { loginUser } = useContext(LoginContext);
+
     const [menu , setMenu] = useState(false);
     
     
@@ -22,7 +24,7 @@ import { SignupContext } from "../context/signupContext";
     <NavLink to="/" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800 underline" : "text-black hover:text-green-800"}>Home</NavLink>
     <NavLink to="/about" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800 underline" : "text-black hover:text-green-800"}>About</NavLink>
     <NavLink to="/farms" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800 underline" : "text-black hover:text-green-800"}>Farms</NavLink>
-    {user ?<NavLink to="/dashboard" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800" : "text-black hover:text-green-800"}>Dashboard</NavLink> : <button className="text-sm w-30 bg-green-700 py-2 text-white rounded-lg hover:bg-green-800"><NavLink to="/signup">Login/Signup</NavLink></button>}
+    {user || loginUser ?<NavLink to="/dashboard" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800" : "text-black hover:text-green-800"}>Dashboard</NavLink> : <button className="text-sm w-30 bg-green-700 py-2 text-white rounded-lg hover:bg-green-800"><NavLink to="/signup">Login/Signup</NavLink></button>}
       </div>
      
       <div className="p-10 lg:hidden transition-all duration-1000" onClick={()=>setMenu(!menu)}> {menu ? <RxCross2 className="size-5"/> : <SlMenu/>} </div>
@@ -33,7 +35,7 @@ import { SignupContext } from "../context/signupContext";
     <NavLink to="/" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800 underline" : "text-black hover:text-green-800"}>Home</NavLink>
     <NavLink to="/about" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800 underline" : "text-black hover:text-green-800"}>About</NavLink>
     <NavLink to="/farms" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800 underline" : "text-black hover:text-green-800"}>Farms</NavLink>
-    {user ?<NavLink to="/dashboard" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800" : "text-black hover:text-green-800"}>Dashboard</NavLink> : <NavLink to="/signup" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800" : "text-black hover:text-green-800"}>Login/Signup</NavLink>}
+    {user || loginUser ?<NavLink to="/dashboard" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800" : "text-black hover:text-green-800"}>Dashboard</NavLink> : <NavLink to="/signup" className={({isActive})=>isActive ? "text-base text-green-700 hover:text-green-800" : "text-black hover:text-green-800"}>Login/Signup</NavLink>}
       </div>
      
 

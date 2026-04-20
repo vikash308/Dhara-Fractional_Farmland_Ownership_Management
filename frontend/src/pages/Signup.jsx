@@ -12,19 +12,20 @@ function Signup() {
   const [role, setRole] = useState('');
   const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState();
   const [password, setPassword] = useState("");
 
   const SubmitSignup = async (e) => {
     e.preventDefault();
-    if(!role || !username || !email || !password){
+    if(!role || !username || !email || !phone || !password){
       toast.error("All fields are mandatory");
     }
     else{
     try {
-      await signup(username, role, email, password);
-      toast.success("Signup successfully");
+      let res = await signup(username , email, password , phone , role);
+      toast.success(res.message);
     } catch (e) {
-      toast.error("Error occurred during signup");
+      toast.error(e.message);
     }
     if(role === 'user') navigate("/");
     else navigate('/farmer');
@@ -48,6 +49,7 @@ function Signup() {
             </span>
             <input type="text" placeholder="Username" className="text-white border p-1 rounded-lg" onChange={(e) => setUserName(e.target.value)} />
             <input type="email" placeholder="Email" className="text-white border p-1 rounded-lg" onChange={(e) => setEmail(e.target.value)} />
+            <input type="tel" placeholder="Phone No." className="text-white border p-1 rounded-lg" onChange={(e) => setPhone(e.target.value)} />
             <input type="password" placeholder="Password" className="text-white border p-1 rounded-lg" onChange={(e) => setPassword(e.target.value)} />
             <input type="submit" className="bg-green-900 text-white border p-1 rounded-lg " />
           </form>
