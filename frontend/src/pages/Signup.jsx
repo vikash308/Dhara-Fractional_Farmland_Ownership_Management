@@ -1,65 +1,152 @@
 import { useState, useContext } from "react";
-import { NavLink ,Navigate, useNavigate } from 'react-router-dom'
-import { SignupContext } from "../context/signupContext";
-import {toast} from "react-toastify";
-import "react-toastify/dist/ReactToastify.css"
-
+import { NavLink, useNavigate } from 'react-router-dom';
+import { AuthContext } from "../context/AuthContext";
+import { toast } from "react-toastify";
+import { HiOutlineMail, HiOutlineLockClosed, HiOutlineUser, HiOutlinePhone } from "react-icons/hi";
 
 function Signup() {
   const navigate = useNavigate();
-  const { signup } = useContext(SignupContext);
+  const { signup } = useContext(AuthContext);
 
   const [role, setRole] = useState('');
   const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState();
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const SubmitSignup = async (e) => {
     e.preventDefault();
-    if(!role || !username || !email || !phone || !password){
+    if (!role || !username || !email || !phone || !password) {
       toast.error("All fields are mandatory");
+      return;
     }
-    else{
-    try {
-      let res = await signup(username , email, password , phone , role);
+
+    setIsLoading(true);
+    const res = await signup(username, email, password, phone, role);
+    setIsLoading(false);
+
+    if (res.success) {
       toast.success(res.message);
-    } catch (e) {
-      toast.error(e.message);
+      if (role === 'user') navigate("/");
+      else navigate('/farmer');
+    } else {
+      toast.error(res.message);
     }
-    if(role === 'user') navigate("/");
-    else navigate('/farmer');
-  }
-  }
+  };
 
-  return <>
-    <div className="flex justify-center mt-5 mb-5 rounded-lg ml-2 mr-2 ">
-      <div className="bg-[url('\public\FarmerImg.jpg')] bg-cover h-110 w-110 rounded-lg">
-        <div className="bg-black/85 w-full h-full flex flex-col items-center pt-8 rounded-lg">
+  return (
+    <div className="min-h-[90vh] flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8 glass-card p-10 bg-white shadow-2xl">
+        <div>
+          <div className="mx-auto h-12 w-12 bg-[#1a4d2e] rounded-xl flex items-center justify-center text-white font-bold text-2xl mb-4">
+            D
+          </div>
+          <h2 className="text-center text-3xl font-extrabold text-[#1a4d2e]">
+            Join Dhara
+          </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            Start your digital farming journey today
+          </p>
+        </div>
 
-          <h1 className="text-xl md:text-2xl text-white text-center mb-2">Signup</h1>
+        <form className="mt-8 space-y-6" onSubmit={SubmitSignup}>
+          <div className="space-y-4">
+            {/* Role Selection */}
+            <div className="flex justify-center gap-6 p-3 bg-gray-50 rounded-xl border border-gray-100">
+              <label className="flex items-center gap-2 cursor-pointer group">
+                <input 
+                  type="radio" 
+                  name="role" 
+                  className="w-4 h-4 text-[#1a4d2e] focus:ring-[#1a4d2e]" 
+                  onChange={() => setRole('user')} 
+                  required 
+                />
+                <span className="text-sm font-medium text-gray-700 group-hover:text-[#1a4d2e]">Investor</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer group">
+                <input 
+                  type="radio" 
+                  name="role" 
+                  className="w-4 h-4 text-[#1a4d2e] focus:ring-[#1a4d2e]" 
+                  onChange={() => setRole('farmer')} 
+                  required 
+                />
+                <span className="text-sm font-medium text-gray-700 group-hover:text-[#1a4d2e]">Farmer</span>
+              </label>
+            </div>
 
-          <form action="" className="flex flex-col gap-5" onSubmit={SubmitSignup}>
-            <span className="flex gap-2">
-              <h3 className="text-white">Select the role : </h3>
-              <input type="radio" id="user" name="role" className="accent-blue-500" required onChange={() => setRole('user')} />
-              <label htmlFor="user" className="text-white text-sm">User</label>
-              <input type="radio" id="farmer" name="role" className="accent-blue-500" required onChange={() => setRole('farmer')} />
-              <label htmlFor="farmer" className="text-white text-sm">Farmer</label>
-            </span>
-            <input type="text" placeholder="Username" className="text-white border p-1 rounded-lg" onChange={(e) => setUserName(e.target.value)} />
-            <input type="email" placeholder="Email" className="text-white border p-1 rounded-lg" onChange={(e) => setEmail(e.target.value)} />
-            <input type="tel" placeholder="Phone No." className="text-white border p-1 rounded-lg" onChange={(e) => setPhone(e.target.value)} />
-            <input type="password" placeholder="Password" className="text-white border p-1 rounded-lg" onChange={(e) => setPassword(e.target.value)} />
-            <input type="submit" className="bg-green-900 text-white border p-1 rounded-lg " />
-          </form>
-          <h2 className="mt-5 text-white text-sm">Already have account <NavLink to="/login" className="text-blue-400 hover:underline">Login</NavLink></h2>
+            <div className="relative">
+              <HiOutlineUser className="absolute left-3 top-3.5 text-gray-400 text-xl" />
+              <input
+                type="text"
+                required
+                className="appearance-none rounded-xl relative block w-full px-12 py-3 border border-gray-200 placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-[#1a4d2e] focus:border-[#1a4d2e] sm:text-sm transition-all"
+                placeholder="Full Name"
+                value={username}
+                onChange={(e) => setUserName(e.target.value)}
+              />
+            </div>
 
+            <div className="relative">
+              <HiOutlineMail className="absolute left-3 top-3.5 text-gray-400 text-xl" />
+              <input
+                type="email"
+                required
+                className="appearance-none rounded-xl relative block w-full px-12 py-3 border border-gray-200 placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-[#1a4d2e] focus:border-[#1a4d2e] sm:text-sm transition-all"
+                placeholder="Email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+
+            <div className="relative">
+              <HiOutlinePhone className="absolute left-3 top-3.5 text-gray-400 text-xl" />
+              <input
+                type="tel"
+                required
+                className="appearance-none rounded-xl relative block w-full px-12 py-3 border border-gray-200 placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-[#1a4d2e] focus:border-[#1a4d2e] sm:text-sm transition-all"
+                placeholder="Phone Number"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+            </div>
+
+            <div className="relative">
+              <HiOutlineLockClosed className="absolute left-3 top-3.5 text-gray-400 text-xl" />
+              <input
+                type="password"
+                required
+                className="appearance-none rounded-xl relative block w-full px-12 py-3 border border-gray-200 placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-[#1a4d2e] focus:border-[#1a4d2e] sm:text-sm transition-all"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className={`group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-xl text-white bg-[#1a4d2e] hover:bg-[#2d5a3c] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1a4d2e] transition-all ${isLoading ? 'opacity-70 cursor-not-allowed' : ''}`}
+            >
+              {isLoading ? "Creating Account..." : "Create Account"}
+            </button>
+          </div>
+        </form>
+
+        <div className="text-center">
+          <p className="text-sm text-gray-600">
+            Already have an account?{" "}
+            <NavLink to="/login" className="font-medium text-orange-600 hover:text-orange-500 underline transition-colors">
+              Log in instead
+            </NavLink>
+          </p>
         </div>
       </div>
     </div>
-
-  </>
+  );
 }
 
 export default Signup;
