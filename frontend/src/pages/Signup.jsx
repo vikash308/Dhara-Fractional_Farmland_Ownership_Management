@@ -1,6 +1,8 @@
 import { useState, useContext } from "react";
 import { NavLink ,Navigate, useNavigate } from 'react-router-dom'
 import { SignupContext } from "../context/signupContext";
+import {toast} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"
 
 
 function Signup() {
@@ -10,18 +12,20 @@ function Signup() {
   const [role, setRole] = useState('');
   const [username, setUserName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState();
   const [password, setPassword] = useState("");
 
   const SubmitSignup = async (e) => {
     e.preventDefault();
-    if(!role || !username || !email || !password){
-      alert("All fiels are mandatory"); }
+    if(!role || !username || !email || !phone || !password){
+      toast.error("All fields are mandatory");
+    }
     else{
     try {
-      await signup(username, role, email, password);
-      alert("Signup successfully");
+      let res = await signup(username , email, password , phone , role);
+      toast.success(res.message);
     } catch (e) {
-      console.log(e);
+      toast.error(e.message);
     }
     if(role === 'user') navigate("/");
     else navigate('/farmer');
@@ -45,6 +49,7 @@ function Signup() {
             </span>
             <input type="text" placeholder="Username" className="text-white border p-1 rounded-lg" onChange={(e) => setUserName(e.target.value)} />
             <input type="email" placeholder="Email" className="text-white border p-1 rounded-lg" onChange={(e) => setEmail(e.target.value)} />
+            <input type="tel" placeholder="Phone No." className="text-white border p-1 rounded-lg" onChange={(e) => setPhone(e.target.value)} />
             <input type="password" placeholder="Password" className="text-white border p-1 rounded-lg" onChange={(e) => setPassword(e.target.value)} />
             <input type="submit" className="bg-green-900 text-white border p-1 rounded-lg " />
           </form>
@@ -53,7 +58,6 @@ function Signup() {
         </div>
       </div>
     </div>
-    <h1>{role}</h1>
 
   </>
 }

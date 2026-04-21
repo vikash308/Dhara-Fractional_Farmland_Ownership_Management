@@ -1,5 +1,12 @@
 
+let IS_PROD = false;
+const server = IS_PROD ?
+    "" :
+    "http://localhost:3000"
 
-export const signupUrl = "https://localhost:3000/signup";
-export const loignUrl = "https://localhost:3000/login";
+
+export default server;
+
+
+
 

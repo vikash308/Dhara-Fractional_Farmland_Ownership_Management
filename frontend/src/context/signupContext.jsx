@@ -1,26 +1,26 @@
 import { createContext, useState } from "react";
 import axios from 'axios';
-import {signupUrl} from '../api';
-
+import server from "../api";
 export const SignupContext = createContext();
 
 export const SignupProvider = ({children}) =>{
     const [user , setUser] = useState(null);
-    const signup = async (username , role , email , password)=>{
+    const signup = async (name , email ,password, phone, role)=>{
         try{
-        const res = await axios.post(signupUrl,{
-            username,
-            role,
+        const res = await axios.post(server + "/signup",{
+            name,
             email,
-            password
+            password,
+            phone,
+            role
         });
-        console.log("res.data", res.data);
         setUser(res.data);
+        return res.data;
     }catch(e){
-        console.log("Error : " , e);
+        return e.response.data;
     }
     }
-    return<SignupContext.Provider value={{ user, signup }}>
+    return<SignupContext.Provider value={{ user,setUser, signup }}>
         {children}
     </SignupContext.Provider>
    
