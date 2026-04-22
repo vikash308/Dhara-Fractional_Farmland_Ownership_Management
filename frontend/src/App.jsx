@@ -10,6 +10,7 @@ import Dashboard from './pages/Dashboard';
 import SelectCrop from './pages/SelectCrop';
 import CropLogs from './pages/CropLogs';
 import FarmerDashboard from './FarmerPages/FarmerDashboard';
+import AddFarm from './FarmerPages/AddFarm';
 import AddCropLog from './FarmerPages/AddCropLog';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -40,6 +41,7 @@ function App() {
             {/* Farmer Routes */}
             <Route element={<ProtectedRoute allowedRoles={['farmer']} />}>
               <Route path="/farmer" element={<FarmerDashboard />} />
+              <Route path="/add-farm" element={<AddFarm />} />
               <Route path="/add-log/:bookingId" element={<AddCropLog />} />
             </Route>
           </Routes>

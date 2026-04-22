@@ -10,7 +10,7 @@ function Farms() {
   useEffect(() => {
     const fetchFarms = async () => {
       try {
-        const res = await api.get("/api/lands");
+        const res = await api.get("/api/farms");
         const farmsData = res.data.data || res.data;
         setFarms(Array.isArray(farmsData) ? farmsData : []);
       } catch (error) {
