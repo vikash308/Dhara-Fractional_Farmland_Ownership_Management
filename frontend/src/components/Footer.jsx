@@ -1,5 +1,6 @@
 import { NavLink } from "react-router-dom";
-import { RxGithubLogo, RxLinkedinLogo, RxTwitterLogo, RxInstagramLogo } from "react-icons/rx";
+import { RxLinkedinLogo, RxTwitterLogo, RxInstagramLogo } from "react-icons/rx";
+import { toast } from "react-toastify";
 
 function Footer() {
   const currentYear = new Date().getFullYear();
@@ -37,8 +38,8 @@ function Footer() {
             <h4 className="font-bold text-lg mb-6">Platform</h4>
             <ul className="space-y-4 text-sm text-green-100/70">
               <li><NavLink to="/farms" className="hover:text-orange-400 transition-colors">Browse Farms</NavLink></li>
-              <li><NavLink to="/how-it-works" className="hover:text-orange-400 transition-colors">How it Works</NavLink></li>
-              <li><NavLink to="/pricing" className="hover:text-orange-400 transition-colors">Pricing</NavLink></li>
+              <li><a href="/#process-section" className="hover:text-orange-400 transition-colors">How it Works</a></li>
+              <li><button onClick={() => toast.info("Pricing details are customized per plot size. Please signup to view details.")} className="hover:text-orange-400 transition-colors">Pricing</button></li>
               <li><NavLink to="/about" className="hover:text-orange-400 transition-colors">About Us</NavLink></li>
             </ul>
           </div>
@@ -58,13 +59,17 @@ function Footer() {
           <div>
             <h4 className="font-bold text-lg mb-6">Stay Connected</h4>
             <p className="text-sm text-green-100/70 mb-4">Get the latest farm updates and harvest reports.</p>
-            <form className="space-y-3">
+            <form 
+              onSubmit={(e) => { e.preventDefault(); toast.success("Subscribed! Welcome to the Dhara community."); }}
+              className="space-y-3"
+            >
               <input 
                 type="email" 
                 placeholder="Email address" 
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-orange-500"
+                required
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-orange-500 text-white"
               />
-              <button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-xl transition-all text-sm shadow-lg shadow-orange-900/20">
+              <button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-xl transition-all text-sm shadow-lg shadow-orange-900/20">
                 Subscribe
               </button>
             </form>

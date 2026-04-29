@@ -3,7 +3,8 @@ import Booking from "../models/booking.model.js";
 
 export const addCropLog = async (req, res) => {
   try {
-    const { bookingId, title, description, image, growthStage, healthStatus } = req.body;
+    const image = req.file ? req.file.path.replace(/\\/g, "/") : req.body.image;
+    const { bookingId, title, description, growthStage, healthStatus, fertilizer, water } = req.body;
     
     const log = await CropLog.create({
       bookingId,
@@ -12,6 +13,8 @@ export const addCropLog = async (req, res) => {
       image,
       growthStage,
       healthStatus,
+      fertilizer,
+      water,
       date: new Date()
     });
 

@@ -19,6 +19,8 @@ const cropLogSchema = new mongoose.Schema({
     enum: ["Excellent", "Good", "Fair", "Poor"],
     default: "Good"
   },
+  fertilizer: { type: String, default: "None" },
+  water: { type: String, default: "Normal" },
   date: { type: Date, default: Date.now }
 }, { timestamps: true });
 

@@ -1,4 +1,5 @@
 import { HiOutlineLightBulb, HiOutlineUserGroup, HiOutlineGlobeAlt, HiOutlineArrowCircleRight } from "react-icons/hi";
+import { NavLink } from "react-router";
 
 function About() {
   const values = [
@@ -132,9 +133,12 @@ function About() {
         <div className="max-w-2xl mx-auto px-6">
           <h2 className="text-3xl font-bold text-[#1a4d2e] mb-6">Ready to join the movement?</h2>
           <p className="text-gray-500 mb-10">Start your journey today and become a part of the most authentic farming community.</p>
-          <button className="btn-primary py-4 px-12 text-lg flex items-center gap-2 mx-auto shadow-xl shadow-green-900/20">
+          <NavLink 
+            to="/signup" 
+            className="btn-primary py-4 px-12 text-lg flex items-center gap-2 mx-auto shadow-xl shadow-green-900/20 w-fit"
+          >
             Get Started Now <HiOutlineArrowCircleRight className="text-2xl" />
-          </button>
+          </NavLink>
         </div>
       </section>
     </div>

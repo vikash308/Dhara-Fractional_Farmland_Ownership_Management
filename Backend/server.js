@@ -17,6 +17,9 @@ app.use(cors());
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
+// Test Route
+app.get("/api/test", (req, res) => res.json({ message: "Nodemon is definitely working now!" }));
+
 // API Routes
 app.use("/api/auth", userRoutes);
 app.use("/api/farms", farmRoutes);

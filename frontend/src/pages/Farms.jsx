@@ -25,11 +25,11 @@ function Farms() {
   const filteredFarms = farms.filter(farm => {
     const name = (farm.name || "").toLowerCase();
     const state = (farm.location?.state || "").toLowerCase();
-    const district = (farm.location?.district || "").toLowerCase();
+    const city = (farm.location?.city || "").toLowerCase();
     
     return name.includes(searchTerm.toLowerCase()) || 
            state.includes(searchTerm.toLowerCase()) || 
-           district.includes(searchTerm.toLowerCase());
+           city.includes(searchTerm.toLowerCase());
   });
 
   return (

@@ -18,7 +18,7 @@ function AddFarm() {
     },
     totalArea: "",
     soilType: "",
-    images: [""]
+    imageFiles: []
   });
 
   const [plots, setPlots] = useState([
@@ -44,8 +44,21 @@ function AddFarm() {
     setIsLoading(true);
     
     try {
+      const formData = new FormData();
+      formData.append("name", farmData.name);
+      formData.append("description", farmData.description);
+      formData.append("totalArea", farmData.totalArea);
+      formData.append("soilType", farmData.soilType);
+      formData.append("location", JSON.stringify(farmData.location));
+      
+      farmData.imageFiles.forEach(file => {
+        formData.append("images", file);
+      });
+
       // 1. Create Farm
-      const farmRes = await api.post("/api/farms", farmData);
+      const farmRes = await api.post("/api/farms", formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
       const farmId = farmRes.data.data._id;
 
       // 2. Create Plots
@@ -123,6 +136,23 @@ function AddFarm() {
                   value={farmData.location.state}
                   onChange={(e) => setFarmData({...farmData, location: {...farmData.location, state: e.target.value}})}
                 />
+              </div>
+              <div className="md:col-span-2 space-y-2">
+                <label className="text-sm font-bold text-gray-700 ml-2">Farm Images</label>
+                <div className="flex flex-col items-center justify-center p-8 bg-gray-50 border-2 border-dashed border-gray-200 rounded-3xl hover:border-[#1a4d2e] transition-all cursor-pointer relative">
+                  <input 
+                    type="file" multiple accept="image/*"
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    onChange={(e) => setFarmData({...farmData, imageFiles: Array.from(e.target.files)})}
+                  />
+                  <HiOutlinePlus className="text-3xl text-gray-400 mb-2" />
+                  <p className="text-sm text-gray-500 font-medium">
+                    {farmData.imageFiles.length > 0 
+                      ? `${farmData.imageFiles.length} files selected` 
+                      : "Click to upload farm photos (Max 5)"}
+                  </p>
+                  <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest mt-2">JPG, PNG, WEBP up to 5MB</p>
+                </div>
               </div>
             </div>
           </div>

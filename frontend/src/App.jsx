@@ -11,6 +11,7 @@ import SelectCrop from './pages/SelectCrop';
 import CropLogs from './pages/CropLogs';
 import FarmerDashboard from './FarmerPages/FarmerDashboard';
 import AddFarm from './FarmerPages/AddFarm';
+import ManagePlots from './FarmerPages/ManagePlots';
 import AddCropLog from './FarmerPages/AddCropLog';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -42,6 +43,7 @@ function App() {
             <Route element={<ProtectedRoute allowedRoles={['farmer']} />}>
               <Route path="/farmer" element={<FarmerDashboard />} />
               <Route path="/add-farm" element={<AddFarm />} />
+              <Route path="/manage-plots" element={<ManagePlots />} />
               <Route path="/add-log/:bookingId" element={<AddCropLog />} />
             </Route>
           </Routes>

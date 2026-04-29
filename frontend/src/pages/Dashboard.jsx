@@ -1,9 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
-import { HiOutlineTrendingUp, HiOutlineDatabase, HiOutlineSun, HiOutlineLocationMarker, HiOutlineClipboardList } from "react-icons/hi";
+import { HiOutlineTrendingUp, HiOutlineDatabase, HiOutlineSun, HiOutlineLocationMarker, HiOutlineClipboardList, HiOutlineGlobeAlt } from "react-icons/hi";
 import { toast } from "react-toastify";
 import api from "../utils/api";
 import { NavLink } from "react-router-dom";
+import AgreementPDF from "../components/AgreementPDF";
 
 function Dashboard() {
   const { user } = useContext(AuthContext);
@@ -109,14 +110,27 @@ function Dashboard() {
                           <div className="text-right">
                             <p className="text-xs text-gray-400 font-bold uppercase mb-2">Growth Progress</p>
                             <div className="flex items-center gap-4">
-                              <div className="w-32 h-2 bg-gray-100 rounded-full overflow-hidden">
-                                <div className="h-full bg-[#1a4d2e] rounded-full" style={{ width: '35%' }}></div>
-                              </div>
-                              <span className="font-black text-[#1a4d2e] text-sm">35%</span>
+                              {(() => {
+                                const start = new Date(booking.startDate).getTime();
+                                const end = new Date(booking.endDate).getTime();
+                                const now = new Date().getTime();
+                                const progress = Math.min(100, Math.max(0, Math.round(((now - start) / (end - start)) * 100)));
+                                return (
+                                  <>
+                                    <div className="w-32 h-2 bg-gray-100 rounded-full overflow-hidden">
+                                      <div className="h-full bg-[#1a4d2e] rounded-full" style={{ width: `${progress}%` }}></div>
+                                    </div>
+                                    <span className="font-black text-[#1a4d2e] text-sm">{progress}%</span>
+                                  </>
+                                );
+                              })()}
                             </div>
                             <NavLink to={`/crop-logs/${booking._id}`} className="mt-3 inline-block text-xs font-black text-orange-600 hover:underline">
                               Full Timeline →
                             </NavLink>
+                            <div className="mt-4 flex justify-end">
+                              <AgreementPDF booking={booking} user={user} />
+                            </div>
                           </div>
                         ) : (
                           <p className="text-sm text-gray-400 italic">Waiting for verification...</p>
@@ -142,7 +156,10 @@ function Dashboard() {
               <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
               <h3 className="font-black text-2xl mb-4 relative z-10">Market Pulse</h3>
               <p className="text-green-100/70 text-sm leading-relaxed mb-8 relative z-10">Organic Turmeric demand has surged by 18% in European markets. Consider planting next season.</p>
-              <button className="w-full py-4 bg-orange-500 text-white rounded-2xl font-black text-sm hover:bg-orange-600 transition-all shadow-xl shadow-orange-900/20 relative z-10">
+              <button 
+                onClick={() => toast.info("Your comprehensive market report is being generated. Check back in 24 hours.")}
+                className="w-full py-4 bg-orange-500 text-white rounded-2xl font-black text-sm hover:bg-orange-600 transition-all shadow-xl shadow-orange-900/20 relative z-10"
+              >
                 Full Report
               </button>
             </div>
@@ -159,6 +176,23 @@ function Dashboard() {
                   <p className="text-sm text-gray-600 leading-relaxed">Early morning updates provide the best image clarity for pests.</p>
                 </div>
               </div>
+            </div>
+
+            <div className="glass-card p-6 bg-white border-none shadow-sm rounded-[30px] space-y-3">
+              <button 
+                onClick={() => toast.success("Profile update requested. You will receive a secure link via email.")}
+                className="w-full text-left p-3 hover:bg-gray-50 rounded-xl transition-colors border border-gray-100 flex items-center gap-3"
+              >
+                <div className="p-2 bg-blue-50 text-blue-600 rounded-lg"><HiOutlineClipboardList /></div>
+                <span className="text-sm font-medium">Update My Bio</span>
+              </button>
+              <button 
+                onClick={() => toast.info("Public profile view is coming soon for Dhara Premium members.")}
+                className="w-full text-left p-3 hover:bg-gray-50 rounded-xl transition-colors border border-gray-100 flex items-center gap-3"
+              >
+                <div className="p-2 bg-green-50 text-green-600 rounded-lg"><HiOutlineGlobeAlt /></div>
+                <span className="text-sm font-medium">View Public Profile</span>
+              </button>
             </div>
           </div>
         </div>

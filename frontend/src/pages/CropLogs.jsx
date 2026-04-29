@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import { HiOutlineCalendar, HiOutlineClock, HiOutlineShieldCheck } from "react-icons/hi";
-import api from "../utils/api";
+import { HiOutlineCalendar, HiOutlineClock, HiOutlineShieldCheck, HiOutlineBeaker, HiOutlineClipboardList } from "react-icons/hi";
+import api, { getAssetUrl } from "../utils/api";
 
 function CropLogs() {
   const { bookingId } = useParams();
@@ -48,7 +48,7 @@ function CropLogs() {
                     <div className="flex flex-col md:flex-row gap-6">
                       {log.image && (
                         <div className="w-full md:w-48 h-48 rounded-xl overflow-hidden shrink-0">
-                          <img src={log.image} alt={log.title} className="w-full h-full object-cover" />
+                          <img src={getAssetUrl(log.image)} alt={log.title} className="w-full h-full object-cover" />
                         </div>
                       )}
                       <div className="flex-1">
@@ -65,6 +65,14 @@ function CropLogs() {
                           </span>
                           <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-bold border border-blue-100">
                             Health: {log.healthStatus}
+                          </span>
+                          {log.fertilizer && log.fertilizer !== "None" && (
+                            <span className="px-3 py-1 bg-purple-50 text-purple-600 rounded-full text-xs font-bold border border-purple-100 flex items-center gap-1">
+                              <HiOutlineBeaker /> {log.fertilizer}
+                            </span>
+                          )}
+                          <span className="px-3 py-1 bg-cyan-50 text-cyan-600 rounded-full text-xs font-bold border border-cyan-100 flex items-center gap-1">
+                            💧 Water: {log.water}
                           </span>
                         </div>
                       </div>

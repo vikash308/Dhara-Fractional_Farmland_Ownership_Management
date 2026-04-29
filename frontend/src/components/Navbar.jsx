@@ -19,13 +19,14 @@ function Navbar() {
   }
 
   const userLinks = [
-    { to: "/", label: "Home" },
+    { to: user ? "/dashboard" : "/", label: "Home" },
     { to: "/farms", label: "Marketplace" },
     { to: "/about", label: "About" }
   ];
 
   const farmerLinks = [
-    { to: "/farmer", label: "My Lands" },
+    { to: "/farmer", label: "Home" },
+    { to: "/manage-plots", label: "Manage Plots" },
     { to: "/farms", label: "Preview Ads" },
     { to: "/about", label: "How it Works" }
   ];

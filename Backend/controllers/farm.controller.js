@@ -3,7 +3,26 @@ import Plot from "../models/plot.model.js";
 
 export const createFarm = async (req, res) => {
   try {
-    const farm = await Farm.create({ ...req.body, farmerId: req.user.id });
+    const images = req.files ? req.files.map(file => file.path.replace(/\\/g, "/")) : [];
+    
+    // In multipart/form-data, objects like 'location' might come as strings
+    let location = req.body.location;
+    if (typeof location === 'string') {
+      try {
+        location = JSON.parse(location);
+      } catch (e) {
+        // Fallback or handle error
+      }
+    }
+
+    const farmData = {
+      ...req.body,
+      location,
+      images,
+      farmerId: req.user.id
+    };
+
+    const farm = await Farm.create(farmData);
     res.status(201).json({ success: true, data: farm });
   } catch (error) {
     res.status(400).json({ success: false, message: error.message });
@@ -13,7 +32,17 @@ export const createFarm = async (req, res) => {
 export const getAllFarms = async (req, res) => {
   try {
     const farms = await Farm.find().populate("farmerId", "name email");
-    res.status(200).json({ success: true, data: farms });
+    
+    // For each farm, find its plots and get the minimum price
+    const farmsWithPrice = await Promise.all(farms.map(async (farm) => {
+      const plots = await Plot.find({ farmId: farm._id });
+      const minPrice = plots.length > 0 ? Math.min(...plots.map(p => p.pricePerSeason)) : null;
+      const farmObj = farm.toObject();
+      farmObj.startingPrice = minPrice;
+      return farmObj;
+    }));
+
+    res.status(200).json({ success: true, data: farmsWithPrice });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
   }

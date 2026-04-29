@@ -48,7 +48,10 @@ function Home() {
               <NavLink to="/signup" className="btn-primary py-4 px-10 text-lg shadow-2xl shadow-green-900/20 flex items-center justify-center gap-2 group">
                 Start Farming Now <HiOutlineArrowRight className="group-hover:translate-x-1 transition-transform" />
               </NavLink>
-              <button className="flex items-center justify-center gap-4 py-4 px-8 bg-white text-gray-700 font-bold rounded-2xl border border-gray-100 hover:bg-gray-50 transition-all">
+              <button 
+                onClick={() => document.getElementById('process-section')?.scrollIntoView({ behavior: 'smooth' })}
+                className="flex items-center justify-center gap-4 py-4 px-8 bg-white text-gray-700 font-bold rounded-2xl border border-gray-100 hover:bg-gray-50 transition-all"
+              >
                 <div className="w-10 h-10 bg-orange-50 text-orange-600 rounded-full flex items-center justify-center text-xl shadow-inner">
                   <BsPlayFill />
                 </div>
@@ -124,7 +127,7 @@ function Home() {
       </section>
 
       {/* --- THE PROCESS (STEP BY STEP) --- */}
-      <section className="py-24">
+      <section id="process-section" className="py-24">
         <div className="max-w-7xl mx-auto px-6">
           <div className="bg-[#1a4d2e] rounded-[60px] p-12 md:p-24 text-white relative overflow-hidden shadow-2xl">
             <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-black/20 to-transparent"></div>

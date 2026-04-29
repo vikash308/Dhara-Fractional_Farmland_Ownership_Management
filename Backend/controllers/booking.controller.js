@@ -35,7 +35,10 @@ export const createBooking = async (req, res) => {
 export const getMyBookings = async (req, res) => {
   try {
     const bookings = await Booking.find({ userId: req.user.id })
-      .populate("farmId")
+      .populate({
+        path: "farmId",
+        populate: { path: "farmerId", select: "name" }
+      })
       .populate("plotId")
       .populate("selectedCrop.cropId");
     res.status(200).json({ success: true, data: bookings });
@@ -54,8 +57,11 @@ export const getFarmerBookings = async (req, res) => {
 
     // 2. Find all bookings for these farms
     const bookings = await Booking.find({ farmId: { $in: farmIds } })
-      .populate("userId", "name email")
-      .populate("farmId", "name")
+      .populate("userId", "name email phone")
+      .populate({
+        path: "farmId",
+        populate: { path: "farmerId", select: "name" }
+      })
       .populate("plotId");
       
     res.status(200).json({ success: true, data: bookings });

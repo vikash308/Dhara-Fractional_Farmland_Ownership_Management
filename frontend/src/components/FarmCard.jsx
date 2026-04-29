@@ -1,6 +1,7 @@
 import { NavLink } from "react-router-dom";
 import { HiOutlineLocationMarker } from "react-icons/hi";
 import { BsArrowRight } from "react-icons/bs";
+import { getAssetUrl } from "../utils/api";
 
 function FarmCard({ FarmDetails }) {
   if (!FarmDetails || FarmDetails.length === 0) {
@@ -15,24 +16,32 @@ function FarmCard({ FarmDetails }) {
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 px-4 sm:px-8 lg:px-12">
       {FarmDetails.map((val, index) => {
         const name = val.name || "Unnamed Farm";
-        const location = val.location ? `${val.location.district}, ${val.location.state}` : "Location TBD";
-        const price = val.price || "TBD";
-        const image = val.images?.[0] || "https://images.unsplash.com/photo-1500382017468-9049fee74a62?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80";
+        const location = val.location ? `${val.location.city}, ${val.location.state}` : "Location TBD";
+        const price = val.startingPrice ? `$${val.startingPrice}` : (val.price ? `$${val.price}` : "$1,500");
+        const image = getAssetUrl(val.images?.[0]) || "https://images.unsplash.com/photo-1500382017468-9049fee74a62?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80";
         const id = val._id;
 
         return (
           <div 
             key={id || index} 
-            className="glass-card group overflow-hidden hover:shadow-2xl transition-all duration-500 border-none bg-white"
+            className="glass-card group overflow-hidden hover:shadow-2xl transition-all duration-500 border-none bg-white relative"
           >
+            <NavLink to={`/booking/${id}`} className="absolute inset-0 z-10 opacity-0">View Details</NavLink>
             <div className="relative h-64 overflow-hidden">
               <img 
                 src={image} 
                 alt={name}
+                onError={(e) => { 
+                  if (e.target.src !== "https://images.unsplash.com/photo-1500382017468-9049fee74a62?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80") {
+                    e.target.src = "https://images.unsplash.com/photo-1500382017468-9049fee74a62?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80";
+                  } else {
+                    e.target.src = "https://images.pexels.com/photos/235725/pexels-photo-235725.jpeg?auto=compress&cs=tinysrgb&w=1200";
+                  }
+                }}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
               />
-              <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[#1a4d2e] font-bold shadow-sm">
-                ${price}
+              <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-[#1a4d2e] font-bold shadow-sm z-20">
+                {price}
               </div>
             </div>
 
@@ -45,7 +54,7 @@ function FarmCard({ FarmDetails }) {
                 {name}
               </h3>
               
-              <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+              <div className="flex items-center justify-between pt-4 border-t border-gray-100 relative z-20">
                 <span className="text-sm text-gray-500">
                   Area: {val.totalArea || "N/A"} Acres
                 </span>

@@ -12,18 +12,34 @@ function AddCropLog() {
     description: "",
     growthStage: "Vegetative",
     healthStatus: "Excellent",
-    image: ""
+    imageFile: null,
+    fertilizer: "None",
+    water: "Normal"
   });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!logData.image && !logData.description) {
+    if (!logData.imageFile && !logData.description) {
       toast.warning("Please provide at least a photo or a description");
       return;
     }
     setIsLoading(true);
     try {
-      const res = await api.post("/api/crop-logs", { ...logData, bookingId });
+      const formData = new FormData();
+      formData.append("bookingId", bookingId);
+      formData.append("title", logData.title);
+      formData.append("description", logData.description);
+      formData.append("growthStage", logData.growthStage);
+      formData.append("healthStatus", logData.healthStatus);
+      formData.append("fertilizer", logData.fertilizer);
+      formData.append("water", logData.water);
+      if (logData.imageFile) {
+        formData.append("image", logData.imageFile);
+      }
+
+      const res = await api.post("/api/crop-logs", formData, {
+        headers: { "Content-Type": "multipart/form-data" }
+      });
       if (res.data.success) {
         toast.success("Daily photo posted! Your investor will see it on their timeline.");
         navigate("/farmer");
@@ -51,16 +67,17 @@ function AddCropLog() {
           
           <form onSubmit={handleSubmit} className="space-y-8">
             <div className="space-y-6">
-              <div className="bg-gray-50 p-6 rounded-2xl border-2 border-dashed border-gray-200 hover:border-[#1a4d2e] transition-colors group">
+              <div className="bg-gray-50 p-6 rounded-2xl border-2 border-dashed border-gray-200 hover:border-[#1a4d2e] transition-colors group relative cursor-pointer">
                 <label className="block text-sm font-bold text-gray-700 mb-4">Upload Crop Photo</label>
                 <div className="flex flex-col items-center justify-center py-4">
                   <input 
-                    type="text" 
-                    className="w-full p-4 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-[#1a4d2e] outline-none shadow-sm"
-                    placeholder="Paste image URL here (e.g. from gallery/camera)"
-                    value={logData.image}
-                    onChange={(e) => setLogData({...logData, image: e.target.value})}
+                    type="file" accept="image/*"
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    onChange={(e) => setLogData({...logData, imageFile: e.target.files[0]})}
                   />
+                  <p className="text-sm font-bold text-[#1a4d2e]">
+                    {logData.imageFile ? logData.imageFile.name : "Click to select or drag photo"}
+                  </p>
                   <p className="mt-3 text-[10px] text-gray-400 uppercase font-bold tracking-widest">Supports JPG, PNG (Max 5MB)</p>
                 </div>
               </div>
@@ -106,6 +123,32 @@ function AddCropLog() {
                   </select>
                 </div>
               </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-gray-50 p-4 rounded-2xl">
+                  <label className="block text-[10px] font-bold text-gray-400 uppercase mb-2">Fertilizer Used</label>
+                  <input 
+                    type="text"
+                    className="w-full bg-transparent font-bold text-[#1a4d2e] outline-none"
+                    placeholder="e.g. NPK, Organic"
+                    value={logData.fertilizer}
+                    onChange={(e) => setLogData({...logData, fertilizer: e.target.value})}
+                  />
+                </div>
+                <div className="bg-gray-50 p-4 rounded-2xl">
+                  <label className="block text-[10px] font-bold text-gray-400 uppercase mb-2">Watering Level</label>
+                  <select 
+                    className="w-full bg-transparent font-bold text-[#1a4d2e] outline-none"
+                    value={logData.water}
+                    onChange={(e) => setLogData({...logData, water: e.target.value})}
+                  >
+                    <option>Low</option>
+                    <option>Normal</option>
+                    <option>Heavy</option>
+                    <option>Drip Only</option>
+                  </select>
+                </div>
+              </div>
             </div>
 
             <div className="flex gap-4">
@@ -130,6 +173,5 @@ function AddCropLog() {
     </div>
   );
 }
-
 
 export default AddCropLog;

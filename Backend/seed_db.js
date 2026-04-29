@@ -5,6 +5,7 @@ import User from "./models/user.model.js";
 import Farm from "./models/farm.model.js";
 import Plot from "./models/plot.model.js";
 import Crop from "./models/crop.model.js";
+import Booking from "./models/booking.model.js";
 
 dotenv.config();
 
@@ -13,146 +14,124 @@ const seedDB = async () => {
     await mongoose.connect(process.env.MONGO_URL);
     console.log("Connected to DB... Cleaning old data...");
 
-    // 1. Clear existing data
     await User.deleteMany({});
     await Farm.deleteMany({});
     await Plot.deleteMany({});
     await Crop.deleteMany({});
+    await Booking.deleteMany({});
 
     const hashedPassword = await bcrypt.hash("password123", 10);
 
-    // 2. Create Farmers
-    const farmers = await User.insertMany([
-      {
-        name: "Ramesh Kumar",
-        email: "ramesh@dhara.com",
-        password: hashedPassword,
-        role: "farmer",
-        phone: "9876543210"
-      },
-      {
-        name: "Suresh Kumar",
-        email: "suresh@dhara.com",
-        password: hashedPassword,
-        role: "farmer",
-        phone: "9876543211"
-      }
-    ]);
+    // 1. Create Farmers (10)
+    const farmerNames = ["Ramesh Kumar", "Suresh Kumar", "Mahesh Singh", "Rajesh Khanna", "Amit Patel", "Vijay Yadav", "Sanjay Gupta", "Anil Sharma", "Sunil Verma", "Karan Johar"];
+    const farmers = await User.insertMany(farmerNames.map((name, i) => ({
+      name,
+      email: `farmer${i+1}@dhara.com`,
+      password: hashedPassword,
+      role: "farmer",
+      phone: `987654321${i}`
+    })));
 
-    // 3. Create Users (Investors)
-    const users = await User.insertMany([
-      {
-        name: "Akash Gupta",
-        email: "akash@gmail.com",
-        password: hashedPassword,
-        role: "user",
-        phone: "9999999999"
-      },
-      {
-        name: "Priya Sharma",
-        email: "priya@gmail.com",
-        password: hashedPassword,
-        role: "user",
-        phone: "9999999998"
-      }
-    ]);
+    // 2. Create Investors (20)
+    const investorNames = ["Akash Gupta", "Priya Sharma", "Rahul Verma", "Sneha Rao", "Vikram Seth", "Anjali Nair", "Rohan Joshi", "Megha Kapoor", "Deepak Dass", "Ishita Roy", "Kunal Shah", "Tanvi Jain", "Arjun Reddy", "Pooja Hegde", "Siddharth Malhotra", "Kiara Advani", "Varun Dhawan", "Alia Bhatt", "Ranbir Kapoor", "Kareena Khan"];
+    const investors = await User.insertMany(investorNames.map((name, i) => ({
+      name,
+      email: `user${i+1}@gmail.com`,
+      password: hashedPassword,
+      role: "user",
+      phone: `99999999${i < 10 ? '0'+i : i}`
+    })));
 
-    // 4. Create Crops
-    const crops = await Crop.insertMany([
-      {
-        name: "Premium Basmati Rice",
-        category: "Grains",
-        season: "Kharif",
-        growthDuration: 120,
-        description: "High-quality aromatic rice.",
-        image: "https://images.unsplash.com/photo-1536679845700-10680a67309f"
-      },
-      {
-        name: "Organic Saffron",
-        category: "Spices",
-        season: "Winter",
-        growthDuration: 180,
-        description: "Pure Kashmiri Saffron.",
-        image: "https://images.unsplash.com/photo-1615485290382-441e4d0c9cb5"
-      },
-      {
-        name: "Alphonso Mango",
-        category: "Fruits",
-        season: "Summer",
-        growthDuration: 90,
-        description: "King of Mangoes from Ratnagiri.",
-        image: "https://images.unsplash.com/photo-1553134832-d9dca495cae8"
-      },
-      {
-        name: "Baby Spinach",
-        category: "Vegetables",
-        season: "All Season",
-        growthDuration: 45,
-        description: "Fresh organic baby spinach.",
-        image: "https://images.unsplash.com/photo-1576045057995-568f588f82fb"
-      }
-    ]);
+    // 3. Create Crops
+    const cropData = [
+      { name: "Premium Basmati Rice", category: "Grains", season: "Kharif", growthDuration: 120, description: "Aromatic long-grain rice.", image: "https://images.unsplash.com/photo-1536679845700-10680a67309f" },
+      { name: "Organic Saffron", category: "Spices", season: "Winter", growthDuration: 180, description: "Pure Kashmiri Saffron.", image: "https://images.unsplash.com/photo-1615485290382-441e4d0c9cb5" },
+      { name: "Alphonso Mango", category: "Fruits", season: "Summer", growthDuration: 90, description: "King of Mangoes.", image: "https://images.unsplash.com/photo-1553134832-d9dca495cae8" },
+      { name: "Baby Spinach", category: "Vegetables", season: "All Season", growthDuration: 45, description: "Fresh baby spinach.", image: "https://images.unsplash.com/photo-1576045057995-568f588f82fb" },
+      { name: "Golden Wheat", category: "Grains", season: "Rabi", growthDuration: 110, description: "High-protein wheat.", image: "https://images.unsplash.com/photo-1501431821157-a737a1112441" },
+      { name: "Red Tomatoes", category: "Vegetables", season: "Summer", growthDuration: 60, description: "Juicy organic tomatoes.", image: "https://images.unsplash.com/photo-1518977676601-b53f02ac6d31" }
+    ];
+    const crops = await Crop.insertMany(cropData);
 
-    // 5. Create Farms for Farmer Ramesh
-    const farm1 = await Farm.create({
-      farmerId: farmers[0]._id,
-      name: "Ramesh Organic Estate",
-      location: { address: "Hills Road 4", city: "Pune", state: "Maharashtra" },
-      totalArea: 25,
-      description: "A premium estate specializing in organic grains.",
-      images: ["https://images.unsplash.com/photo-1500382017468-9049fee74a62"],
-      soilType: "Black Soil",
+    // 4. Create Farms (15)
+    const farmNames = [
+      "Ramesh Organic Estate", "Sunrise Orchards", "Suresh Green Valley", "Narmada River Farm", "Himalayan View Plantation",
+      "Golden Acres", "Patel Dairy & Farm", "Yadav Organic Hub", "Gupta Spice Garden", "Sharma Wheat Fields",
+      "Verma Fruit Kingdom", "Johar Vineyard", "Singh Millet Farm", "Khanna Pulse Estate", "The Green Canopy"
+    ];
+    const locations = [
+      { city: "Pune", state: "Maharashtra" }, { city: "Ratnagiri", state: "Maharashtra" }, { city: "Shimla", state: "Himachal Pradesh" },
+      { city: "Indore", state: "Madhya Pradesh" }, { city: "Manali", state: "Himachal Pradesh" }, { city: "Nashik", state: "Maharashtra" },
+      { city: "Anand", state: "Gujarat" }, { city: "Lucknow", state: "Uttar Pradesh" }, { city: "Kochi", state: "Kerala" },
+      { city: "Amritsar", state: "Punjab" }, { city: "Nagpur", state: "Maharashtra" }, { city: "Bangalore", state: "Karnataka" },
+      { city: "Jaipur", state: "Rajasthan" }, { city: "Bhopal", state: "Madhya Pradesh" }, { city: "Hyderabad", state: "Telangana" }
+    ];
+
+    const farmImages = [
+      "https://images.unsplash.com/photo-1500382017468-9049fee74a62", "https://images.unsplash.com/photo-1595246140625-573b715d11dc",
+      "https://images.unsplash.com/photo-1464226184884-fa280b87c399", "https://images.unsplash.com/photo-1502462041640-b3d7e50d0662",
+      "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2", "https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad"
+    ];
+
+    const createdFarms = await Farm.insertMany(farmNames.map((name, i) => ({
+      farmerId: farmers[i % 10]._id,
+      name,
+      location: { address: `Road ${i+1}, Sector ${i%5}`, ...locations[i] },
+      totalArea: 20 + (i * 5),
+      description: `A beautiful managed farm in ${locations[i].city} specialized in diverse crops.`,
+      images: [farmImages[i % farmImages.length]],
+      soilType: i % 2 === 0 ? "Black Soil" : "Laterite Soil",
       verified: true
-    });
+    })));
 
-    const farm2 = await Farm.create({
-      farmerId: farmers[0]._id,
-      name: "Sunrise Orchards",
-      location: { address: "Beach side 9", city: "Ratnagiri", state: "Maharashtra" },
-      totalArea: 15,
-      description: "Famous for the best mangoes and seasonal fruits.",
-      images: ["https://images.unsplash.com/photo-1595246140625-573b715d11dc"],
-      soilType: "Laterite Soil",
-      verified: true
-    });
+    // 5. Create Plots (5 per farm = 75 plots)
+    const plots = [];
+    for (const farm of createdFarms) {
+      for (let j = 1; j <= 5; j++) {
+        plots.push({
+          farmId: farm._id,
+          plotNumber: `${farm.name.split(' ')[0].toUpperCase()}-${j}`,
+          size: 0.25 * j,
+          pricePerSeason: 1000 + (j * 500),
+          status: j <= 2 ? "booked" : "available"
+        });
+      }
+    }
+    const createdPlots = await Plot.insertMany(plots);
 
-    // 6. Create Farms for Farmer Suresh
-    const farm3 = await Farm.create({
-      farmerId: farmers[1]._id,
-      name: "Suresh Green Valley",
-      location: { address: "Valley View 1", city: "Shimla", state: "Himachal Pradesh" },
-      totalArea: 40,
-      description: "High altitude farm perfect for saffron and cold-weather crops.",
-      images: ["https://images.unsplash.com/photo-1464226184884-fa280b87c399"],
-      soilType: "Mountain Soil",
-      verified: true
-    });
-
-    // 7. Create Plots for Farm 1
-    await Plot.insertMany([
-      { farmId: farm1._id, plotNumber: "R1-01", size: 0.5, pricePerSeason: 1500, status: "available" },
-      { farmId: farm1._id, plotNumber: "R1-02", size: 0.5, pricePerSeason: 1500, status: "available" },
-      { farmId: farm1._id, plotNumber: "R1-03", size: 1.0, pricePerSeason: 2800, status: "available" }
-    ]);
-
-    // 8. Create Plots for Farm 2
-    await Plot.insertMany([
-      { farmId: farm2._id, plotNumber: "M1-A", size: 0.25, pricePerSeason: 800, status: "available" },
-      { farmId: farm2._id, plotNumber: "M1-B", size: 0.25, pricePerSeason: 800, status: "available" }
-    ]);
-
-    // 9. Create Plots for Farm 3
-    await Plot.insertMany([
-      { farmId: farm3._id, plotNumber: "SV-01", size: 0.1, pricePerSeason: 2000, status: "available" },
-      { farmId: farm3._id, plotNumber: "SV-02", size: 0.1, pricePerSeason: 2000, status: "available" },
-      { farmId: farm3._id, plotNumber: "SV-03", size: 0.2, pricePerSeason: 3800, status: "available" }
-    ]);
-
-    console.log("Database Seeded Successfully! 🚜🌱");
-    console.log("Credentials:");
-    console.log("Farmers: ramesh@dhara.com, suresh@dhara.com (Pass: password123)");
-    console.log("Users: akash@gmail.com, priya@gmail.com (Pass: password123)");
+    // 6. Create Bookings (30+)
+    const bookings = [];
+    const bookedPlots = createdPlots.filter(p => p.status === "booked");
     
+    for (let k = 0; k < Math.min(bookedPlots.length, 30); k++) {
+      const plot = bookedPlots[k];
+      const investor = investors[k % 20];
+      const crop = crops[k % crops.length];
+      
+      const startDate = new Date();
+      startDate.setMonth(startDate.getMonth() - (k % 4)); // Some bookings started months ago
+      const endDate = new Date(startDate);
+      endDate.setMonth(endDate.getMonth() + 6);
+
+      bookings.push({
+        userId: investor._id,
+        farmId: plot.farmId,
+        plotId: plot._id,
+        totalPrice: plot.pricePerSeason,
+        startDate,
+        endDate,
+        status: k % 5 === 0 ? "pending" : "active",
+        selectedCrop: {
+          cropId: crop._id,
+          name: crop.name,
+          status: k % 3 === 0 ? "growing" : (k % 4 === 0 ? "harvested" : "planned")
+        }
+      });
+    }
+    await Booking.insertMany(bookings);
+
+    console.log("Large Dataset Seeded Successfully! 🚜🌱📈");
+    console.log(`Summary: ${farmers.length} Farmers, ${investors.length} Investors, ${createdFarms.length} Farms, ${createdPlots.length} Plots, 30 Bookings.`);
     process.exit();
   } catch (error) {
     console.error("Seeding failed:", error);

@@ -3,10 +3,11 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
 import { HiOutlineMail, HiOutlineLockClosed, HiOutlineUser, HiOutlinePhone } from "react-icons/hi";
+import { GoogleLogin } from '@react-oauth/google';
 
 function Signup() {
   const navigate = useNavigate();
-  const { signup } = useContext(AuthContext);
+  const { signup, googleLogin } = useContext(AuthContext);
 
   const [role, setRole] = useState('');
   const [username, setUserName] = useState("");
@@ -33,6 +34,21 @@ function Signup() {
     } else {
       toast.error(res.message);
     }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    const res = await googleLogin(credentialResponse.credential);
+    if (res.success) {
+      toast.success(res.message);
+      if (res.user.role === 'user') navigate("/");
+      else navigate('/farmer');
+    } else {
+      toast.error(res.message);
+    }
+  };
+
+  const handleGoogleError = () => {
+    toast.error("Google Login Failed");
   };
 
   return (
@@ -133,6 +149,26 @@ function Signup() {
             >
               {isLoading ? "Creating Account..." : "Create Account"}
             </button>
+          </div>
+
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">Or continue with</span>
+            </div>
+          </div>
+
+          <div className="flex justify-center">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleError}
+              useOneTap
+              theme="outline"
+              size="large"
+              width="100%"
+            />
           </div>
         </form>
 
