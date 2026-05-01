@@ -55,7 +55,7 @@ function About() {
               <div className="relative">
                 <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-orange-100 rounded-3xl z-0"></div>
                 <img 
-                  src="https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
+                  src="/about-partnership.png" 
                   alt="Agriculture" 
                   className="rounded-3xl shadow-2xl relative z-10 w-full object-cover h-[400px]"
                 />
@@ -118,7 +118,7 @@ function About() {
               </div>
               <div className="h-[400px] lg:h-auto overflow-hidden">
                 <img 
-                  src="https://images.unsplash.com/photo-1500382017468-9049fee74a62?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+                  src="/hero-farm.png" 
                   alt="Farmer" 
                   className="w-full h-full object-cover"
                 />

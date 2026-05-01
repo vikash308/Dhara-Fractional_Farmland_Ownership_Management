@@ -80,7 +80,7 @@ function Home() {
             {/* Hero Image Container */}
             <div className="relative z-10 rounded-[40px] overflow-hidden shadow-[0_50px_100px_-20px_rgba(26,77,46,0.3)]">
               <img 
-                src="https://images.unsplash.com/photo-1500382017468-9049fee74a62?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" 
+                src="/hero-farm.png" 
                 alt="Digital Farming" 
                 className="w-full h-[600px] object-cover"
               />
@@ -176,8 +176,8 @@ function Home() {
               </div>
             </div>
             <div className="lg:w-1/2 grid grid-cols-2 gap-4">
-              <img src="https://images.unsplash.com/photo-1595246140625-573b715d11dc?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Farm" className="rounded-3xl h-64 w-full object-cover shadow-lg" />
-              <img src="https://images.unsplash.com/photo-1592841608619-61849a21986d?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Farm" className="rounded-3xl h-64 w-full object-cover shadow-lg mt-8" />
+              <img src="/review-farmer.png" alt="Farm" className="rounded-3xl h-64 w-full object-cover shadow-lg" />
+              <img src="/review-crops.png" alt="Farm" className="rounded-3xl h-64 w-full object-cover shadow-lg mt-8" />
             </div>
           </div>
         </div>
