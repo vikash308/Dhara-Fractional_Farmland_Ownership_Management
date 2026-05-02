@@ -2,8 +2,9 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import userRoutes from './routes/user.route.js'
-import landRoutes from './routes/land.route.js'
+import userRoutes from './routes/user.route.js';
+import farmRoutes from './routes/farm.route.js';
+import plotRoutes from './routes/plot.route.js';
 import path from "path";
 
 dotenv.config();
@@ -15,7 +16,9 @@ app.use("/uploads", express.static("uploads"));
 
 
 app.use("/api/auth",userRoutes);
-app.use("/api/lands", landRoutes);
+app.use("/api/farms",farmRoutes);
+app.use("/api/plots",plotRoutes);
+
 
 const start = async()=>{
     try {
