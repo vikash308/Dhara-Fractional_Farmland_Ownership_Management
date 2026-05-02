@@ -13,6 +13,10 @@ import FarmerDashboard from './FarmerPages/FarmerDashboard';
 import AddFarm from './FarmerPages/AddFarm';
 import ManagePlots from './FarmerPages/ManagePlots';
 import AddCropLog from './FarmerPages/AddCropLog';
+import Contact from './pages/Contact';
+import Legal from './pages/Legal';
+import Pricing from './pages/Pricing';
+import FarmerStories from './pages/FarmerStories';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ToastContainer } from 'react-toastify';
@@ -30,6 +34,10 @@ function App() {
             <Route path="/farms" element={<Farms />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/legal" element={<Legal />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/farmer-stories" element={<FarmerStories />} />
 
             {/* User/Investor Routes */}
             <Route element={<ProtectedRoute allowedRoles={['user']} />}>

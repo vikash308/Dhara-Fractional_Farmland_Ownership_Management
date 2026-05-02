@@ -38,8 +38,7 @@ function Footer() {
             <h4 className="font-bold text-lg mb-6">Platform</h4>
             <ul className="space-y-4 text-sm text-green-100/70">
               <li><NavLink to="/farms" className="hover:text-orange-400 transition-colors">Browse Farms</NavLink></li>
-              <li><a href="/#process-section" className="hover:text-orange-400 transition-colors">How it Works</a></li>
-              <li><button onClick={() => toast.info("Pricing details are customized per plot size. Please signup to view details.")} className="hover:text-orange-400 transition-colors">Pricing</button></li>
+              <li><NavLink to="/pricing" className="hover:text-orange-400 transition-colors">Pricing</NavLink></li>
               <li><NavLink to="/about" className="hover:text-orange-400 transition-colors">About Us</NavLink></li>
             </ul>
           </div>
@@ -48,10 +47,9 @@ function Footer() {
           <div>
             <h4 className="font-bold text-lg mb-6">Resources</h4>
             <ul className="space-y-4 text-sm text-green-100/70">
-              <li><a href="#" className="hover:text-orange-400 transition-colors">Farmer Stories</a></li>
-              <li><a href="#" className="hover:text-orange-400 transition-colors">Market Reports</a></li>
-              <li><a href="#" className="hover:text-orange-400 transition-colors">Help Center</a></li>
-              <li><a href="#" className="hover:text-orange-400 transition-colors">Privacy Policy</a></li>
+              <li><NavLink to="/farmer-stories" className="hover:text-orange-400 transition-colors">Farmer Stories</NavLink></li>
+              <li><NavLink to="/contact" className="hover:text-orange-400 transition-colors">Help Center</NavLink></li>
+              <li><NavLink to="/legal" className="hover:text-orange-400 transition-colors">Privacy Policy</NavLink></li>
             </ul>
           </div>
 
@@ -79,8 +77,8 @@ function Footer() {
         <div className="pt-10 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-6 text-sm text-green-100/40">
           <p>© {currentYear} Dhara Agriculture Pvt Ltd. All rights reserved.</p>
           <div className="flex gap-8">
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-white transition-colors">Cookie Policy</a>
+            <NavLink to="/legal" className="hover:text-white transition-colors">Terms of Service</NavLink>
+            <NavLink to="/legal" className="hover:text-white transition-colors">Cookie Policy</NavLink>
           </div>
         </div>
       </div>
