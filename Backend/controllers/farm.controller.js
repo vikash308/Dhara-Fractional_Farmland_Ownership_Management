@@ -37,8 +37,15 @@ export const getAllFarms = async (req, res) => {
     const farmsWithPrice = await Promise.all(farms.map(async (farm) => {
       const plots = await Plot.find({ farmId: farm._id });
       const minPrice = plots.length > 0 ? Math.min(...plots.map(p => p.pricePerSeason)) : null;
+      
+      const totalPlots = plots.length;
+      const bookedPlots = plots.filter(p => p.status === 'booked').length;
+      const funded = totalPlots > 0 ? Math.round((bookedPlots / totalPlots) * 100) : 0;
+      
       const farmObj = farm.toObject();
       farmObj.startingPrice = minPrice;
+      farmObj.funded = funded;
+      farmObj.totalPlots = totalPlots;
       return farmObj;
     }));
 
