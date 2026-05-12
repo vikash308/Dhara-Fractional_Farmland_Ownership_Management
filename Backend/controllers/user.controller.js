@@ -18,7 +18,7 @@ const generateToken = (user) => {
         { expiresIn: "7d" }
     );
 };
-export const signup = async (req,res)=>{
+export const signup = async (req, res) => {
     try {
         const { name, email, password, phone, role } = req.body;
         if (!name || !email || !password || !phone) {
@@ -50,7 +50,7 @@ export const signup = async (req,res)=>{
     }
 }
 
-export const login = async (req,res)=>{
+export const login = async (req, res) => {
     try {
         const { email, password } = req.body;
         if (!email || !password) {
