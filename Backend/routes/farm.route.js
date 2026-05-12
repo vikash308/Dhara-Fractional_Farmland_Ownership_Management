@@ -1,9 +1,9 @@
 import express from "express";
 import {
-    createFarm,
-    getAllFarms,
-    getFarmDetails,
-    getFarmerFarms
+  createFarm,
+  getAllFarms,
+  getFarmDetails,
+  getFarmerFarms
 } from "../controllers/farm.controller.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 import { checkFarmer } from "../middleware/checkRole.js";

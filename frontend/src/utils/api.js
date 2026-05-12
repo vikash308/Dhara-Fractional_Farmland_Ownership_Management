@@ -18,4 +18,11 @@ api.interceptors.request.use(
   }
 );
 
+export const getAssetUrl = (path) => {
+  if (!path || typeof path !== 'string' || path.trim() === '') return null;
+  const trimmedPath = path.trim();
+  if (trimmedPath.startsWith("http")) return trimmedPath;
+  return `${server}/${trimmedPath.replace(/^\//, "")}`;
+};
+
 export default api;

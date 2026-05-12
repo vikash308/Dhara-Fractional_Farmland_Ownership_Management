@@ -1,9 +1,9 @@
 import express from "express";
-import {
-    createBooking,
-    getMyBookings,
-    getFarmerBookings,
-    updateBookingStatus
+import { 
+  createBooking, 
+  getMyBookings, 
+  getFarmerBookings, 
+  updateBookingStatus 
 } from "../controllers/booking.controller.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 

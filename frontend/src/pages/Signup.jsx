@@ -3,10 +3,12 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
 import { HiOutlineMail, HiOutlineLockClosed, HiOutlineUser, HiOutlinePhone } from "react-icons/hi";
+import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
+import { FcGoogle } from "react-icons/fc";
 
 function Signup() {
   const navigate = useNavigate();
-  const { signup } = useContext(AuthContext);
+  const { signup, googleLogin } = useContext(AuthContext);
 
   const [role, setRole] = useState('');
   const [username, setUserName] = useState("");
@@ -33,6 +35,28 @@ function Signup() {
     } else {
       toast.error(res.message);
     }
+  };
+
+  const handleGoogleSuccess = async (tokenResponse) => {
+    setIsLoading(true);
+    const res = await googleLogin(tokenResponse.access_token, true);
+    setIsLoading(false);
+    if (res.success) {
+      toast.success(res.message);
+      if (res.user.role === 'user') navigate("/");
+      else navigate('/farmer');
+    } else {
+      toast.error(res.message);
+    }
+  };
+
+  const loginWithGoogle = useGoogleLogin({
+    onSuccess: handleGoogleSuccess,
+    onError: () => toast.error("Google Login Failed"),
+  });
+
+  const handleGoogleError = () => {
+    toast.error("Google Login Failed");
   };
 
   return (
@@ -134,6 +158,24 @@ function Signup() {
               {isLoading ? "Creating Account..." : "Create Account"}
             </button>
           </div>
+
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">Or continue with</span>
+            </div>
+          </div>
+
+          <button 
+            type="button"
+            onClick={() => loginWithGoogle()}
+            className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-200 rounded-xl bg-white hover:bg-gray-50 text-gray-700 font-bold shadow-sm transition-all hover:shadow-md active:scale-[0.98] group"
+          >
+            <FcGoogle className="text-2xl group-hover:scale-110 transition-transform" />
+            <span>Sign in with Google</span>
+          </button>
         </form>
 
         <div className="text-center">

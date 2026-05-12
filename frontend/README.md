@@ -1,16 +1,41 @@
-# React + Vite
+# 🎨 Dhara Frontend Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A premium, highly interactive React application built for the Dhara fractional farming platform.
 
-Currently, two official plugins are available:
+## 🔄 Data Flow Diagram (DFD)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+This diagram represents how data flows between the user, the application, and the backend services.
 
-## React Compiler
+```mermaid
+graph TD
+    User((User / Investor)) -->|Login/Signup| Auth[Authentication Process]
+    Farmer((Farmer)) -->|Login/Signup| Auth
+    
+    Auth -->|Validates| DB[(Backend API)]
+    
+    User -->|Browses| Marketplace[Marketplace Module]
+    Marketplace -->|Fetches Farms| DB
+    
+    User -->|Books Plot| Booking[Booking Process]
+    Booking -->|Stores Transaction| DB
+    
+    Farmer -->|Updates Logs| Monitoring[Progress Monitoring]
+    Monitoring -->|Uploads Images| Cloudinary[Cloudinary Storage]
+    Monitoring -->|Saves Log| DB
+    
+    DB -->|Progress Notification| User
+    DB -->|Real-time Stats| Dashboard[User Dashboard]
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🌟 Visual Features
+- **Glassmorphic UI:** Modern, transparent card designs.
+- **Scroll Animations:** Powered by `framer-motion` for a premium feel.
+- **Interactive Forms:** Multi-step booking and crop selection process.
+- **Dynamic Dashboards:** Separate views for Investors (impact tracking) and Farmers (management).
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🛠 Tech Stack
+- React.js (Vite)
+- Tailwind CSS
+- Framer Motion (Animations)
+- Axios (API Communication)
+- React Toastify (Notifications)

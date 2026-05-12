@@ -6,7 +6,7 @@ function Faqs({ Ques, Ans }) {
     const [showAnswer, setShowAnswer] = useState(false);
 
     return <>
-        <div className="ml-2 mr-2 md:mr-25 md:ml-25 md:bg-green-100/50 rounded-lg md:px-2 p-0.5 mb-2">
+        <div className="ml-2 mr-2 md:mr-25 md:ml-25 md:bg-zinc-300 rounded-lg md:px-2 p-0.5">
             <div className="flex justify-between" onClick={() => setShowAnswer(!showAnswer)}>
                 <h1 className="text-sm md:text-base mb-1 mt-4">{Ques} </h1>
                 <p><SlArrowDown className="mt-5 size-3 md:size-4" /></p>

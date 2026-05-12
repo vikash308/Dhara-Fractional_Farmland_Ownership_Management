@@ -1,5 +1,38 @@
 @import "tailwindcss";
 
-*{
-    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+@theme {
+  --color-primary: #1B3022;
+  --color-primary-light: #2A4A35;
+  --color-secondary: #8DA08A;
+  --color-tertiary: #D17A5D;
+  --color-background: #F9FAF8;
+  --font-inter: "Inter", sans-serif;
+  --font-work: "Work Sans", sans-serif;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Work+Sans:wght@300;400;500;600;700&display=swap');
+
+body {
+    font-family: var(--font-work);
+    background-color: var(--color-background);
+    color: var(--color-primary);
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-inter);
+}
+
+.glass-card {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 0.5px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 32px rgba(27, 48, 34, 0.05);
+}
+
+.glass-dark {
+    background: rgba(27, 48, 34, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 0.5px solid rgba(255, 255, 255, 0.1);
 }

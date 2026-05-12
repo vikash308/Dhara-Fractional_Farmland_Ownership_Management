@@ -3,31 +3,38 @@ import { AuthContext } from "../context/AuthContext";
 import { HiOutlinePlusCircle, HiOutlineUserGroup, HiOutlineGlobeAlt, HiOutlineClipboardList, HiOutlineCloudUpload } from "react-icons/hi";
 import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
-import api from "../utils/api";
+import api, { getAssetUrl } from "../utils/api";
+import AgreementPDF from "../components/AgreementPDF";
+import { HiOutlineDownload } from "react-icons/hi";
 
 function FarmerDashboard() {
   const { user } = useContext(AuthContext);
   const [bookings, setBookings] = useState([]);
+  const [plots, setPlots] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("bookings");
 
   useEffect(() => {
-    const fetchBookings = async () => {
+    const fetchData = async () => {
       try {
-        const res = await api.get("/api/bookings/farmer");
-        setBookings(res.data.data);
+        const [bookingsRes, plotsRes] = await Promise.all([
+          api.get("/api/bookings/farmer"),
+          api.get("/api/plots/farmer")
+        ]);
+        setBookings(bookingsRes.data.data);
+        setPlots(plotsRes.data.data);
       } catch (error) {
-        toast.error("Failed to fetch bookings");
+        toast.error("Failed to fetch dashboard data");
       } finally {
         setIsLoading(false);
       }
     };
-    fetchBookings();
+    fetchData();
   }, []);
 
   const farmerStats = [
-    { label: "Active Plots", value: bookings.filter(b => b.status === "active").length, icon: HiOutlineGlobeAlt, color: "text-green-600", bg: "bg-green-50" },
-    { label: "Active Investors", value: [...new Set(bookings.map(b => b.userId?._id))].length, icon: HiOutlineUserGroup, color: "text-blue-600", bg: "bg-blue-50" },
+    { label: "Active Cultivations", value: bookings.filter(b => b.status === "active").length, icon: HiOutlineGlobeAlt, color: "text-green-600", bg: "bg-green-50" },
+    { label: "Total Managed Area", value: `${plots.reduce((acc, p) => acc + (p.size || 0), 0)} Acres`, icon: HiOutlineGlobeAlt, color: "text-blue-600", bg: "bg-blue-50" },
     { label: "Pending Bookings", value: bookings.filter(b => b.status === "pending").length, icon: HiOutlineClipboardList, color: "text-orange-600", bg: "bg-orange-50" },
   ];
 
@@ -98,8 +105,15 @@ function FarmerDashboard() {
                   <div key={booking._id} className="glass-card p-6 bg-white border-none shadow-sm">
                     <div className="flex justify-between items-center">
                       <div>
-                        <h3 className="font-bold text-gray-900">{booking.landId?.name}</h3>
-                        <p className="text-sm text-gray-500">Investor: {booking.userId?.name || "N/A"} • {booking.plotSize} Acre</p>
+                        <h3 className="font-bold text-gray-900">{booking.farmId?.name}</h3>
+                        <div className="mt-2 space-y-1">
+                          <p className="text-sm font-bold text-[#1a4d2e]">Investor: {booking.userId?.name || "N/A"}</p>
+                          <div className="flex gap-4 text-xs text-gray-500">
+                            <span>📧 {booking.userId?.email}</span>
+                            <span>📞 {booking.userId?.phone || "No Phone"}</span>
+                            <span>📏 {booking.plotId?.size || booking.plotSize || "N/A"} Acre</span>
+                          </div>
+                        </div>
                       </div>
                       <div className="flex gap-2">
                         <button 
@@ -140,14 +154,19 @@ function FarmerDashboard() {
                       <div className="flex items-center gap-4">
                         <div className="w-16 h-16 bg-gray-100 rounded-xl overflow-hidden shadow-inner border border-gray-100">
                           <img 
-                            src={booking.selectedCrop?.image || "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"} 
+                            src={getAssetUrl(booking.selectedCrop?.image) || "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"} 
                             alt={booking.landId?.name} 
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                           />
                         </div>
                         <div>
-                          <h3 className="font-bold text-gray-900 text-lg leading-tight">{booking.landId?.name}</h3>
-                          <div className="flex items-center gap-2 mt-1">
+                          <h3 className="font-bold text-gray-900 text-lg leading-tight">{booking.farmId?.name}</h3>
+                          <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs">
+                            <span className="font-bold text-[#1a4d2e]">Investor: {booking.userId?.name}</span>
+                            <span className="text-gray-500">📧 {booking.userId?.email}</span>
+                            <span className="text-gray-500">📞 {booking.userId?.phone}</span>
+                          </div>
+                          <div className="flex items-center gap-2 mt-2">
                             <span className="text-xs font-bold text-[#1a4d2e] bg-green-50 px-2 py-0.5 rounded uppercase tracking-tighter">
                               {booking.selectedCrop?.name || "No Crop Selected"}
                             </span>
@@ -157,6 +176,9 @@ function FarmerDashboard() {
                       </div>
 
                       <div className="flex gap-2 w-full md:w-auto">
+                        {(booking.status === "active" || booking.status === "confirmed") && (
+                          <AgreementPDF booking={booking} user={booking.userId} />
+                        )}
                         {booking.selectedCrop?.cropId ? (
                           <NavLink 
                             to={`/add-log/${booking._id}`} 
@@ -188,11 +210,24 @@ function FarmerDashboard() {
             <div className="glass-card p-6 bg-white border-none shadow-sm">
               <h2 className="text-lg font-bold text-[#1a4d2e] mb-4">Quick Actions</h2>
               <div className="space-y-3">
-                <button className="w-full text-left p-3 hover:bg-gray-50 rounded-xl transition-colors border border-gray-100 flex items-center gap-3">
+                <NavLink 
+                  to="/manage-plots"
+                  className="w-full text-left p-3 hover:bg-gray-50 rounded-xl transition-colors border border-gray-100 flex items-center gap-3"
+                >
+                  <div className="p-2 bg-orange-50 text-orange-600 rounded-lg"><HiOutlineGlobeAlt /></div>
+                  <span className="text-sm font-medium">Manage Plots</span>
+                </NavLink>
+                <button 
+                  onClick={() => toast.success("Bio update form sent to your registered mobile number.")}
+                  className="w-full text-left p-3 hover:bg-gray-50 rounded-xl transition-colors border border-gray-100 flex items-center gap-3"
+                >
                   <div className="p-2 bg-blue-50 text-blue-600 rounded-lg"><HiOutlineClipboardList /></div>
                   <span className="text-sm font-medium">Update My Bio</span>
                 </button>
-                <button className="w-full text-left p-3 hover:bg-gray-50 rounded-xl transition-colors border border-gray-100 flex items-center gap-3">
+                <button 
+                  onClick={() => toast.info("Your profile is public. You have 4.8/5 rating from investors.")}
+                  className="w-full text-left p-3 hover:bg-gray-50 rounded-xl transition-colors border border-gray-100 flex items-center gap-3"
+                >
                   <div className="p-2 bg-green-50 text-green-600 rounded-lg"><HiOutlineGlobeAlt /></div>
                   <span className="text-sm font-medium">View Public Profile</span>
                 </button>

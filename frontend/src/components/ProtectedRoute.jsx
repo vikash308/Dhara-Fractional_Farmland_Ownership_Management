@@ -24,5 +24,4 @@ const ProtectedRoute = ({ allowedRoles }) => {
   return <Outlet />;
 };
 
-
 export default ProtectedRoute;

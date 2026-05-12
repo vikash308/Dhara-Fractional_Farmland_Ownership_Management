@@ -8,41 +8,40 @@ function Booking() {
   const { farmId } = useParams();
   const navigate = useNavigate();
   
-  const [land, setLand] = useState(null);
+  const [data, setData] = useState({ farm: null, plots: [] });
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
-  const [bookingData, setBookingData] = useState({
-    plotSize: 0.5,
-    duration: "1 Season"
-  });
+  const [selectedPlot, setSelectedPlot] = useState(null);
 
   useEffect(() => {
-    const fetchLand = async () => {
+    const fetchDetails = async () => {
       try {
-        const res = await api.get(`/api/lands/${farmId}`);
-        setLand(res.data.data);
+        const res = await api.get(`/api/farms/details/${farmId}`);
+        setData(res.data.data);
       } catch (error) {
-        toast.error("Failed to fetch land details");
+        toast.error("Failed to fetch farm details");
         navigate("/farms");
       } finally {
         setIsLoading(false);
       }
     };
-    if (farmId) fetchLand();
+    if (farmId) fetchDetails();
   }, [farmId]);
 
   const handleBooking = async () => {
+    if (!selectedPlot) return toast.warning("Please select a plot");
+    
     try {
       const res = await api.post("/api/bookings", {
-        landId: farmId,
-        plotSize: bookingData.plotSize,
-        totalPrice: bookingData.plotSize * 500, 
+        farmId,
+        plotId: selectedPlot._id,
+        totalPrice: selectedPlot.pricePerSeason,
         startDate: new Date(),
-        endDate: new Date(new Date().setMonth(new Date().getMonth() + 6)) 
+        endDate: new Date(new Date().setMonth(new Date().getMonth() + 6))
       });
 
       if (res.data.success) {
-        toast.success("Booking Request Sent Successfully!");
+        toast.success("Plot Booked Successfully!");
         navigate("/dashboard");
       }
     } catch (error) {
@@ -50,85 +49,103 @@ function Booking() {
     }
   };
 
-  if (isLoading) return <div className="flex justify-center py-20"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-900"></div></div>;
+  if (isLoading) return <div className="flex justify-center py-20"><div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1a4d2e]"></div></div>;
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-green-900">Book your plot at {land?.name}</h1>
+    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="max-w-5xl mx-auto">
+        <div className="text-center mb-10">
+          <h1 className="text-3xl font-black text-[#1a4d2e] tracking-tight">Reserve Your Plot at {data.farm?.name}</h1>
+          <p className="text-gray-500 mt-2">{data.farm?.location?.city}, {data.farm?.location?.state}</p>
         </div>
         
-      
-        <div className="flex items-center justify-center mb-12">
+        {/* Progress Stepper */}
+        <div className="flex items-center justify-center mb-16">
           {[1, 2].map((s) => (
             <div key={s} className="flex items-center">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-colors ${step >= s ? 'bg-[#1a4d2e] text-white' : 'bg-gray-200 text-gray-500'}`}>
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold transition-all shadow-lg ${step >= s ? 'bg-[#1a4d2e] text-white scale-110 shadow-green-900/20' : 'bg-white text-gray-400 border border-gray-100'}`}>
                 {s}
               </div>
-              {s < 2 && <div className={`w-20 h-1 transition-colors ${step > s ? 'bg-[#1a4d2e]' : 'bg-gray-200'}`}></div>}
+              {s < 2 && <div className={`w-24 h-1 mx-2 rounded-full transition-colors ${step > s ? 'bg-[#1a4d2e]' : 'bg-gray-200'}`}></div>}
             </div>
           ))}
         </div>
 
-        <div className="glass-card bg-white p-8 md:p-12 shadow-2xl border-none">
+        <div className="glass-card bg-white p-10 md:p-16 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.1)] border-none rounded-[40px]">
           {step === 1 && (
-            <div className="space-y-8 animate-in fade-in duration-500">
+            <div className="space-y-10 animate-in fade-in duration-500">
               <div className="text-center">
-                <h2 className="text-3xl font-bold text-[#1a4d2e]">Select Your Plot Size</h2>
-                <p className="text-gray-500 mt-2">Choose how much land you want to manage at {land?.name}.</p>
+                <h2 className="text-3xl font-bold text-[#1a4d2e]">Choose Available Plot</h2>
+                <p className="text-gray-500 mt-2">Select a subdivision within {data.farm?.name} to start your cultivation.</p>
               </div>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {[0.25, 0.5, 1.0].map((size) => (
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {data.plots.filter(p => p.status === 'available').map((plot) => (
                   <button
-                    key={size}
-                    onClick={() => setBookingData({ ...bookingData, plotSize: size })}
-                    className={`p-6 rounded-2xl border-2 transition-all text-center ${bookingData.plotSize === size ? 'border-[#1a4d2e] bg-green-50 text-[#1a4d2e]' : 'border-gray-100 hover:border-green-200'}`}
+                    key={plot._id}
+                    onClick={() => setSelectedPlot(plot)}
+                    className={`p-8 rounded-[30px] border-2 transition-all text-left relative group ${selectedPlot?._id === plot._id ? 'border-[#1a4d2e] bg-green-50 shadow-xl shadow-green-900/10' : 'border-gray-50 bg-white hover:border-green-200'}`}
                   >
-                    <span className="block text-lg font-bold">{size} Acre</span>
-                    <span className="text-xs text-gray-500">Starting from ${size * 500}</span>
+                    <span className="block text-xl font-black text-[#1a4d2e] mb-2">{plot.plotNumber}</span>
+                    <div className="flex justify-between items-end">
+                      <div>
+                        <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Size</p>
+                        <p className="text-lg font-bold text-gray-700">{plot.size} Acre</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Seasonal Rent</p>
+                        <p className="text-lg font-bold text-orange-600">${plot.pricePerSeason}</p>
+                      </div>
+                    </div>
+                    {selectedPlot?._id === plot._id && <HiOutlineCheckCircle className="absolute top-4 right-4 text-2xl text-[#1a4d2e]" />}
                   </button>
                 ))}
               </div>
-              <button onClick={() => setStep(2)} className="btn-primary w-full py-4 text-lg">Next Step</button>
+              
+              <button 
+                onClick={() => selectedPlot ? setStep(2) : toast.info("Please select a plot first")} 
+                className="btn-primary w-full py-5 text-xl shadow-xl shadow-green-900/20"
+              >
+                Continue to Summary
+              </button>
             </div>
           )}
 
           {step === 2 && (
-            <div className="space-y-8 animate-in zoom-in duration-500">
+            <div className="space-y-10 animate-in zoom-in duration-500">
               <div className="text-center">
                 <h2 className="text-3xl font-bold text-[#1a4d2e]">Booking Summary</h2>
-                <p className="text-gray-500 mt-2">Review your selection before confirmation.</p>
+                <p className="text-gray-500 mt-2">Confirm your selection and agreement.</p>
               </div>
               
-              <div className="bg-gray-50 rounded-2xl p-8 space-y-4">
+              <div className="bg-gray-50 rounded-[30px] p-10 space-y-6">
                 <div className="flex justify-between border-b border-gray-200 pb-4">
-                  <span className="text-gray-600 font-medium">Farm Name</span>
-                  <span className="text-[#1a4d2e] font-bold">{land?.name}</span>
+                  <span className="text-gray-500 font-bold uppercase text-xs tracking-widest">Farm Details</span>
+                  <span className="text-[#1a4d2e] font-black">{data.farm?.name}</span>
                 </div>
                 <div className="flex justify-between border-b border-gray-200 pb-4">
-                  <span className="text-gray-600 font-medium">Selected Plot</span>
-                  <span className="text-[#1a4d2e] font-bold">{bookingData.plotSize} Acre</span>
+                  <span className="text-gray-500 font-bold uppercase text-xs tracking-widest">Selected Plot</span>
+                  <span className="text-[#1a4d2e] font-black">{selectedPlot?.plotNumber} ({selectedPlot?.size} Acre)</span>
                 </div>
                 <div className="flex justify-between border-b border-gray-200 pb-4">
-                  <span className="text-gray-600 font-medium">Duration</span>
-                  <span className="text-[#1a4d2e] font-bold">{bookingData.duration}</span>
+                  <span className="text-gray-500 font-bold uppercase text-xs tracking-widest">Lease Duration</span>
+                  <span className="text-[#1a4d2e] font-black">1 Season (6 Months)</span>
                 </div>
-                <div className="flex justify-between pt-4 text-xl">
-                  <span className="text-gray-900 font-bold">Total Estimated Cost</span>
-                  <span className="text-orange-600 font-bold">${bookingData.plotSize * 500}</span>
+                <div className="flex justify-between pt-6">
+                  <span className="text-gray-900 font-black text-xl">Total Payable</span>
+                  <span className="text-orange-600 font-black text-2xl">${selectedPlot?.pricePerSeason}</span>
                 </div>
               </div>
 
-              <div className="flex items-start gap-3 p-4 bg-orange-50 rounded-xl text-orange-800 text-sm">
-                <HiOutlineInformationCircle className="text-2xl shrink-0" />
-                <p>By confirming, you agree to the land lease agreement and standard farming terms.</p>
+              <div className="flex items-start gap-4 p-6 bg-orange-50 rounded-2xl text-orange-900 text-sm">
+                <HiOutlineInformationCircle className="text-3xl shrink-0" />
+                <p className="font-medium leading-relaxed">By clicking confirm, you agree to the Digital Farming Lease Agreement and the Farmer Partnership Terms. Payment will be required after plot verification.</p>
               </div>
 
-              <div className="flex gap-4">
-                <button onClick={() => setStep(1)} className="btn-primary bg-gray-200 text-gray-700 hover:bg-gray-300 w-1/3">Back</button>
-                <button onClick={handleBooking} className="btn-primary flex-1 py-4 text-lg flex items-center justify-center gap-2">
-                  <HiOutlineCheckCircle className="text-xl" /> Confirm Booking
+              <div className="flex gap-6">
+                <button onClick={() => setStep(1)} className="flex-1 py-5 text-gray-500 font-bold hover:bg-gray-100 rounded-2xl transition-all">Back</button>
+                <button onClick={handleBooking} className="flex-[2] btn-primary py-5 text-xl flex items-center justify-center gap-3 shadow-xl shadow-green-900/20">
+                  <HiOutlineCheckCircle className="text-2xl" /> Confirm & Reserve
                 </button>
               </div>
             </div>

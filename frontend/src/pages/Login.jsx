@@ -3,10 +3,13 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
 import { HiOutlineMail, HiOutlineLockClosed } from "react-icons/hi";
+import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
+import { FcGoogle } from "react-icons/fc";
+import axios from "axios";
 
 function Login() {
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext);
+  const { login, googleLogin } = useContext(AuthContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,7 +21,6 @@ function Login() {
       toast.error("All fields are mandatory");
       return;
     }
-    
     setIsLoading(true);
     const res = await login(email, password);
     setIsLoading(false);
@@ -30,6 +32,28 @@ function Login() {
     } else {
       toast.error(res.message);
     }
+  };
+
+  const handleGoogleSuccess = async (tokenResponse) => {
+    setIsLoading(true);
+    const res = await googleLogin(tokenResponse.access_token, true); 
+    setIsLoading(false);
+    if (res.success) {
+      toast.success(res.message);
+      if (res.user.role === 'user') navigate("/");
+      else navigate('/farmer');
+    } else {
+      toast.error(res.message);
+    }
+  };
+
+  const loginWithGoogle = useGoogleLogin({
+    onSuccess: handleGoogleSuccess,
+    onError: () => toast.error("Google Login Failed"),
+  });
+
+  const handleGoogleError = () => {
+    toast.error("Google Login Failed");
   };
 
   return (
@@ -82,6 +106,24 @@ function Login() {
               {isLoading ? "Signing in..." : "Sign in"}
             </button>
           </div>
+
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">Or continue with</span>
+            </div>
+          </div>
+
+          <button 
+            type="button"
+            onClick={() => loginWithGoogle()}
+            className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-200 rounded-xl bg-white hover:bg-gray-50 text-gray-700 font-bold shadow-sm transition-all hover:shadow-md active:scale-[0.98] group"
+          >
+            <FcGoogle className="text-2xl group-hover:scale-110 transition-transform" />
+            <span>Sign in with Google</span>
+          </button>
         </form>
         
         <div className="text-center">
