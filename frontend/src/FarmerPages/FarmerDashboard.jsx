@@ -3,26 +3,18 @@ import { AuthContext } from "../context/AuthContext";
 import { HiOutlinePlusCircle, HiOutlineUserGroup, HiOutlineGlobeAlt, HiOutlineClipboardList, HiOutlineCloudUpload } from "react-icons/hi";
 import { NavLink } from "react-router-dom";
 import { toast } from "react-toastify";
-<<<<<<< HEAD
 import api, { getAssetUrl } from "../utils/api";
 import AgreementPDF from "../components/AgreementPDF";
 import { HiOutlineDownload } from "react-icons/hi";
-=======
-import api from "../utils/api";
->>>>>>> main
 
 function FarmerDashboard() {
   const { user } = useContext(AuthContext);
   const [bookings, setBookings] = useState([]);
-<<<<<<< HEAD
   const [plots, setPlots] = useState([]);
-=======
->>>>>>> main
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("bookings");
 
   useEffect(() => {
-<<<<<<< HEAD
     const fetchData = async () => {
       try {
         const [bookingsRes, plotsRes] = await Promise.all([
@@ -33,33 +25,16 @@ function FarmerDashboard() {
         setPlots(plotsRes.data.data);
       } catch (error) {
         toast.error("Failed to fetch dashboard data");
-=======
-    const fetchBookings = async () => {
-      try {
-        const res = await api.get("/api/bookings/farmer");
-        setBookings(res.data.data);
-      } catch (error) {
-        toast.error("Failed to fetch bookings");
->>>>>>> main
       } finally {
         setIsLoading(false);
       }
     };
-<<<<<<< HEAD
     fetchData();
   }, []);
 
   const farmerStats = [
     { label: "Active Cultivations", value: bookings.filter(b => b.status === "active").length, icon: HiOutlineGlobeAlt, color: "text-green-600", bg: "bg-green-50" },
     { label: "Total Managed Area", value: `${plots.reduce((acc, p) => acc + (p.size || 0), 0)} Acres`, icon: HiOutlineGlobeAlt, color: "text-blue-600", bg: "bg-blue-50" },
-=======
-    fetchBookings();
-  }, []);
-
-  const farmerStats = [
-    { label: "Active Plots", value: bookings.filter(b => b.status === "active").length, icon: HiOutlineGlobeAlt, color: "text-green-600", bg: "bg-green-50" },
-    { label: "Active Investors", value: [...new Set(bookings.map(b => b.userId?._id))].length, icon: HiOutlineUserGroup, color: "text-blue-600", bg: "bg-blue-50" },
->>>>>>> main
     { label: "Pending Bookings", value: bookings.filter(b => b.status === "pending").length, icon: HiOutlineClipboardList, color: "text-orange-600", bg: "bg-orange-50" },
   ];
 
@@ -130,7 +105,6 @@ function FarmerDashboard() {
                   <div key={booking._id} className="glass-card p-6 bg-white border-none shadow-sm">
                     <div className="flex justify-between items-center">
                       <div>
-<<<<<<< HEAD
                         <h3 className="font-bold text-gray-900">{booking.farmId?.name}</h3>
                         <div className="mt-2 space-y-1">
                           <p className="text-sm font-bold text-[#1a4d2e]">Investor: {booking.userId?.name || "N/A"}</p>
@@ -140,10 +114,6 @@ function FarmerDashboard() {
                             <span>📏 {booking.plotId?.size || booking.plotSize || "N/A"} Acre</span>
                           </div>
                         </div>
-=======
-                        <h3 className="font-bold text-gray-900">{booking.landId?.name}</h3>
-                        <p className="text-sm text-gray-500">Investor: {booking.userId?.name || "N/A"} • {booking.plotSize} Acre</p>
->>>>>>> main
                       </div>
                       <div className="flex gap-2">
                         <button 
@@ -184,17 +154,12 @@ function FarmerDashboard() {
                       <div className="flex items-center gap-4">
                         <div className="w-16 h-16 bg-gray-100 rounded-xl overflow-hidden shadow-inner border border-gray-100">
                           <img 
-<<<<<<< HEAD
                             src={getAssetUrl(booking.selectedCrop?.image) || "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"} 
-=======
-                            src={booking.selectedCrop?.image || "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"} 
->>>>>>> main
                             alt={booking.landId?.name} 
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                           />
                         </div>
                         <div>
-<<<<<<< HEAD
                           <h3 className="font-bold text-gray-900 text-lg leading-tight">{booking.farmId?.name}</h3>
                           <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-xs">
                             <span className="font-bold text-[#1a4d2e]">Investor: {booking.userId?.name}</span>
@@ -202,10 +167,6 @@ function FarmerDashboard() {
                             <span className="text-gray-500">📞 {booking.userId?.phone}</span>
                           </div>
                           <div className="flex items-center gap-2 mt-2">
-=======
-                          <h3 className="font-bold text-gray-900 text-lg leading-tight">{booking.landId?.name}</h3>
-                          <div className="flex items-center gap-2 mt-1">
->>>>>>> main
                             <span className="text-xs font-bold text-[#1a4d2e] bg-green-50 px-2 py-0.5 rounded uppercase tracking-tighter">
                               {booking.selectedCrop?.name || "No Crop Selected"}
                             </span>
@@ -215,12 +176,9 @@ function FarmerDashboard() {
                       </div>
 
                       <div className="flex gap-2 w-full md:w-auto">
-<<<<<<< HEAD
                         {(booking.status === "active" || booking.status === "confirmed") && (
                           <AgreementPDF booking={booking} user={booking.userId} />
                         )}
-=======
->>>>>>> main
                         {booking.selectedCrop?.cropId ? (
                           <NavLink 
                             to={`/add-log/${booking._id}`} 
@@ -252,7 +210,6 @@ function FarmerDashboard() {
             <div className="glass-card p-6 bg-white border-none shadow-sm">
               <h2 className="text-lg font-bold text-[#1a4d2e] mb-4">Quick Actions</h2>
               <div className="space-y-3">
-<<<<<<< HEAD
                 <NavLink 
                   to="/manage-plots"
                   className="w-full text-left p-3 hover:bg-gray-50 rounded-xl transition-colors border border-gray-100 flex items-center gap-3"
@@ -271,13 +228,6 @@ function FarmerDashboard() {
                   onClick={() => toast.info("Your profile is public. You have 4.8/5 rating from investors.")}
                   className="w-full text-left p-3 hover:bg-gray-50 rounded-xl transition-colors border border-gray-100 flex items-center gap-3"
                 >
-=======
-                <button className="w-full text-left p-3 hover:bg-gray-50 rounded-xl transition-colors border border-gray-100 flex items-center gap-3">
-                  <div className="p-2 bg-blue-50 text-blue-600 rounded-lg"><HiOutlineClipboardList /></div>
-                  <span className="text-sm font-medium">Update My Bio</span>
-                </button>
-                <button className="w-full text-left p-3 hover:bg-gray-50 rounded-xl transition-colors border border-gray-100 flex items-center gap-3">
->>>>>>> main
                   <div className="p-2 bg-green-50 text-green-600 rounded-lg"><HiOutlineGlobeAlt /></div>
                   <span className="text-sm font-medium">View Public Profile</span>
                 </button>
@@ -291,7 +241,3 @@ function FarmerDashboard() {
 }
 
 export default FarmerDashboard;
-<<<<<<< HEAD
-
-=======
->>>>>>> main
