@@ -1,6 +1,7 @@
 import { HiOutlineLightBulb, HiOutlineUserGroup, HiOutlineGlobeAlt, HiOutlineArrowCircleRight } from "react-icons/hi";
 import { NavLink } from "react-router-dom";
 import AnimatedSection from "../components/AnimatedSection";
+import SampleAgreement from "../components/SampleAgreement";
 
 function About() {
   const values = [
@@ -55,6 +56,9 @@ function About() {
                   <p className="font-bold text-gray-900">1,200+ Users</p>
                   <p className="text-gray-500">Supporting local farmers</p>
                 </div>
+              </div>
+              <div className="mt-10">
+                <SampleAgreement />
               </div>
             </AnimatedSection>
             <div className="lg:w-1/2">

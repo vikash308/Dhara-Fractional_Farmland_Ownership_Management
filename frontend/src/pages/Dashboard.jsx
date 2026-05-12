@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { HiOutlineTrendingUp, HiOutlineDatabase, HiOutlineSun, HiOutlineLocationMarker, HiOutlineClipboardList, HiOutlineGlobeAlt } from "react-icons/hi";
+import { RiDoubleQuotesL } from "react-icons/ri";
 import { toast } from "react-toastify";
 import api from "../utils/api";
 import { NavLink } from "react-router-dom";
@@ -131,7 +132,28 @@ function Dashboard() {
                             })() 
                           }}></div>
                         </div>
-                        <div className="flex justify-between items-center">
+                        <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
+                          <NavLink 
+                            to={`/farmer-profile/${booking.farmId?.farmerId?._id}`} 
+                            className="flex items-center gap-2 group/link"
+                          >
+                            <img 
+                              src={`https://i.pravatar.cc/100?u=${booking.farmId?.farmerId?._id}`} 
+                              className="w-8 h-8 rounded-full border border-gray-200"
+                              alt="Farmer"
+                            />
+                            <div className="text-[10px]">
+                              <p className="text-gray-400 font-bold uppercase tracking-tighter leading-none">Your Farmer Partner</p>
+                              <p className="text-primary font-black group-hover/link:text-tertiary transition-colors">{booking.farmId?.farmerId?.name || "Verified Farmer"}</p>
+                            </div>
+                          </NavLink>
+                          <div className="flex items-center gap-1 px-2 py-1 bg-green-50 rounded-lg">
+                            <span className="text-xs">🏠</span>
+                            <span className="text-[10px] font-bold text-green-700">Impact +4</span>
+                          </div>
+                        </div>
+
+                        <div className="flex justify-between items-center mt-6">
                           <NavLink to={`/crop-logs/${booking._id}`} className="text-xs font-bold text-tertiary hover:underline">
                             View Timeline →
                           </NavLink>
@@ -144,6 +166,16 @@ function Dashboard() {
                       </div>
                     )}
                   </div>
+                  
+                  {/* Farmer's Personal Note - Bonding Feature */}
+                  {booking.selectedCrop?.cropId && (
+                    <div className="mt-4 p-4 bg-orange-50/50 rounded-2xl border border-orange-100/50 relative overflow-hidden group/note">
+                      <RiDoubleQuotesL className="absolute top-2 right-2 text-2xl text-orange-200/50" />
+                      <p className="text-[11px] text-primary italic font-medium pr-4">
+                        "The soil moisture is perfect this week. Your {booking.selectedCrop.name} is showing great initial sprouts!"
+                      </p>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

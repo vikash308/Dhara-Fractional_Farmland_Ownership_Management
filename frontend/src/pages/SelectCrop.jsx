@@ -97,7 +97,14 @@ function SelectCrop() {
                     </div>
                   )}
                   <div className="h-44 bg-gray-100 rounded-2xl mb-4 overflow-hidden shadow-inner">
-                    <img src={getAssetUrl(crop.image) || "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80"} alt={crop.name} className="w-full h-full object-cover" />
+                    <img 
+                      src={getAssetUrl(crop.image) || "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=800&auto=format&fit=crop"} 
+                      alt={crop.name} 
+                      className="w-full h-full object-cover" 
+                      onError={(e) => {
+                        e.target.src = "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?q=80&w=800&auto=format&fit=crop";
+                      }}
+                    />
                   </div>
                   <h3 className="text-xl font-bold text-[#1a4d2e]">{crop.name}</h3>
                   <p className="text-sm text-gray-500 mt-1">{crop.season} Season • {crop.growthDuration} Days</p>

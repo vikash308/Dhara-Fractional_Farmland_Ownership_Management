@@ -17,6 +17,7 @@ import Contact from './pages/Contact';
 import Legal from './pages/Legal';
 import Pricing from './pages/Pricing';
 import FarmerStories from './pages/FarmerStories';
+import FarmerProfile from './pages/FarmerProfile';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
 import { ToastContainer } from 'react-toastify';
@@ -45,6 +46,7 @@ function App() {
               <Route path="/booking/:farmId" element={<Booking />} />
               <Route path="/select-crop/:bookingId" element={<SelectCrop />} />
               <Route path="/crop-logs/:bookingId" element={<CropLogs />} />
+              <Route path="/farmer-profile/:farmerId" element={<FarmerProfile />} />
             </Route>
 
             {/* Farmer Routes */}

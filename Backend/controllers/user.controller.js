@@ -2,6 +2,7 @@ import User from "../models/user.model.js";
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { OAuth2Client } from 'google-auth-library';
+import axios from 'axios';
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -79,26 +80,35 @@ export const login = async (req,res)=>{
 
 export const googleLogin = async (req, res) => {
     try {
-        const { idToken } = req.body;
-        if (!idToken) {
-            return res.status(400).json({ message: "ID Token is required" });
+        const { idToken, accessToken } = req.body;
+        let name, email, picture;
+
+        if (idToken) {
+            const ticket = await client.verifyIdToken({
+                idToken,
+                audience: process.env.GOOGLE_CLIENT_ID
+            });
+            const payload = ticket.getPayload();
+            name = payload.name;
+            email = payload.email;
+            picture = payload.picture;
+        } else if (accessToken) {
+            // Fetch user info using access token
+            const response = await axios.get(`https://www.googleapis.com/oauth2/v3/userinfo?access_token=${accessToken}`);
+            name = response.data.name;
+            email = response.data.email;
+            picture = response.data.picture;
+        } else {
+            return res.status(400).json({ message: "Token is required" });
         }
-
-        const ticket = await client.verifyIdToken({
-            idToken,
-            audience: process.env.GOOGLE_CLIENT_ID
-        });
-
-        const { name, email, picture, sub: googleId } = ticket.getPayload();
 
         let user = await User.findOne({ email });
 
         if (!user) {
-            // Create user if doesn't exist
             user = await User.create({
                 name,
                 email,
-                role: "user" // Default role
+                role: "user"
             });
         }
 

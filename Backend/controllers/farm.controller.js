@@ -4,7 +4,7 @@ import Plot from "../models/plot.model.js";
 export const createFarm = async (req, res) => {
   try {
     const images = req.files ? req.files.map(file => file.path.replace(/\\/g, "/")) : [];
-    
+
     // In multipart/form-data, objects like 'location' might come as strings
     let location = req.body.location;
     if (typeof location === 'string') {
@@ -32,16 +32,16 @@ export const createFarm = async (req, res) => {
 export const getAllFarms = async (req, res) => {
   try {
     const farms = await Farm.find().populate("farmerId", "name email");
-    
+
     // For each farm, find its plots and get the minimum price
     const farmsWithPrice = await Promise.all(farms.map(async (farm) => {
       const plots = await Plot.find({ farmId: farm._id });
       const minPrice = plots.length > 0 ? Math.min(...plots.map(p => p.pricePerSeason)) : null;
-      
+
       const totalPlots = plots.length;
       const bookedPlots = plots.filter(p => p.status === 'booked').length;
       const funded = totalPlots > 0 ? Math.round((bookedPlots / totalPlots) * 100) : 0;
-      
+
       const farmObj = farm.toObject();
       farmObj.startingPrice = minPrice;
       farmObj.funded = funded;
@@ -59,7 +59,7 @@ export const getFarmDetails = async (req, res) => {
   try {
     const farm = await Farm.findById(req.params.id).populate("farmerId", "name email");
     if (!farm) return res.status(404).json({ success: false, message: "Farm not found" });
-    
+
     const plots = await Plot.find({ farmId: farm._id });
     res.status(200).json({ success: true, data: { farm, plots } });
   } catch (error) {

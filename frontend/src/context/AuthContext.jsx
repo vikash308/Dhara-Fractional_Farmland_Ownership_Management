@@ -62,9 +62,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const googleLogin = async (idToken) => {
+  const googleLogin = async (token, isAccessToken = false) => {
     try {
-      const res = await axios.post(`${server}/api/auth/google`, { idToken });
+      const payload = isAccessToken ? { accessToken: token } : { idToken: token };
+      const res = await axios.post(`${server}/api/auth/google`, payload);
       const responseData = res.data.data || res.data;
       const { token: newToken, user: newUser } = responseData;
 

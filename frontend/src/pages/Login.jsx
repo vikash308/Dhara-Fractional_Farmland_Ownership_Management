@@ -3,7 +3,9 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
 import { HiOutlineMail, HiOutlineLockClosed } from "react-icons/hi";
-import { GoogleLogin } from '@react-oauth/google';
+import { GoogleLogin, useGoogleLogin } from '@react-oauth/google';
+import { FcGoogle } from "react-icons/fc";
+import axios from "axios";
 
 function Login() {
   const navigate = useNavigate();
@@ -32,8 +34,10 @@ function Login() {
     }
   };
 
-  const handleGoogleSuccess = async (credentialResponse) => {
-    const res = await googleLogin(credentialResponse.credential);
+  const handleGoogleSuccess = async (tokenResponse) => {
+    setIsLoading(true);
+    const res = await googleLogin(tokenResponse.access_token, true); 
+    setIsLoading(false);
     if (res.success) {
       toast.success(res.message);
       if (res.user.role === 'user') navigate("/");
@@ -42,6 +46,11 @@ function Login() {
       toast.error(res.message);
     }
   };
+
+  const loginWithGoogle = useGoogleLogin({
+    onSuccess: handleGoogleSuccess,
+    onError: () => toast.error("Google Login Failed"),
+  });
 
   const handleGoogleError = () => {
     toast.error("Google Login Failed");
@@ -107,16 +116,14 @@ function Login() {
             </div>
           </div>
 
-          <div className="flex justify-center">
-            <GoogleLogin
-              onSuccess={handleGoogleSuccess}
-              onError={handleGoogleError}
-              useOneTap
-              theme="outline"
-              size="large"
-              width="100%"
-            />
-          </div>
+          <button 
+            type="button"
+            onClick={() => loginWithGoogle()}
+            className="w-full flex items-center justify-center gap-3 py-3 px-4 border border-gray-200 rounded-xl bg-white hover:bg-gray-50 text-gray-700 font-bold shadow-sm transition-all hover:shadow-md active:scale-[0.98] group"
+          >
+            <FcGoogle className="text-2xl group-hover:scale-110 transition-transform" />
+            <span>Sign in with Google</span>
+          </button>
         </form>
         
         <div className="text-center">

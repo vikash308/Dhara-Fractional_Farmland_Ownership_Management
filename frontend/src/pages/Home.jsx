@@ -2,6 +2,7 @@ import { NavLink } from "react-router-dom";
 import { HiOutlineArrowRight, HiOutlineShieldCheck, HiOutlineTrendingUp, HiOutlineGlobeAlt, HiOutlinePresentationChartBar, HiOutlineBadgeCheck } from "react-icons/hi";
 import { BsPlayFill } from "react-icons/bs";
 import AnimatedSection from "../components/AnimatedSection";
+import SampleAgreement from "../components/SampleAgreement";
 
 function Home() {
   const features = [
@@ -51,15 +52,7 @@ function Home() {
               <NavLink to="/signup" className="bg-[#1a4d2e] hover:bg-[#2d5a3c] text-white font-bold py-4 px-10 text-lg rounded-xl shadow-xl flex items-center justify-center gap-2 group transition-all hover:-translate-y-1">
                 Start Farming Now <HiOutlineArrowRight className="group-hover:translate-x-1 transition-transform" />
               </NavLink>
-              <button 
-                onClick={() => document.getElementById('process-section')?.scrollIntoView({ behavior: 'smooth' })}
-                className="flex items-center justify-center gap-4 py-4 px-8 bg-white text-[#1a4d2e] font-bold rounded-xl hover:bg-gray-50 transition-all border border-gray-200 hover:shadow-lg"
-              >
-                <div className="w-10 h-10 bg-orange-500 text-white rounded-full flex items-center justify-center text-xl shadow-lg group-hover:scale-110 transition-transform">
-                  <BsPlayFill />
-                </div>
-                How it Works
-              </button>
+              <SampleAgreement />
             </div>
 
             {/* Quick Stats */}
