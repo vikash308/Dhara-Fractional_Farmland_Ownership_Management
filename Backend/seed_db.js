@@ -64,13 +64,26 @@ const seedDB = async () => {
       "Desert Bloom Estate", "Coastal Coconut Grove", "Deccan Drylands", "Nilgiri Tea Gardens", "Assam Tea Terrace"
     ];
     const locations = [
-      { city: "Pune", state: "Maharashtra" }, { city: "Ratnagiri", state: "Maharashtra" }, { city: "Shimla", state: "Himachal Pradesh" },
-      { city: "Indore", state: "Madhya Pradesh" }, { city: "Manali", state: "Himachal Pradesh" }, { city: "Nashik", state: "Maharashtra" },
-      { city: "Anand", state: "Gujarat" }, { city: "Lucknow", state: "Uttar Pradesh" }, { city: "Kochi", state: "Kerala" },
-      { city: "Amritsar", state: "Punjab" }, { city: "Nagpur", state: "Maharashtra" }, { city: "Bangalore", state: "Karnataka" },
-      { city: "Jaipur", state: "Rajasthan" }, { city: "Bhopal", state: "Madhya Pradesh" }, { city: "Hyderabad", state: "Telangana" },
-      { city: "Jaisalmer", state: "Rajasthan" }, { city: "Mangalore", state: "Karnataka" }, { city: "Aurangabad", state: "Maharashtra" },
-      { city: "Ooty", state: "Tamil Nadu" }, { city: "Guwahati", state: "Assam" }
+      { city: "Pune", state: "Maharashtra", coordinates: { lat: 18.5204, lng: 73.8567 } },
+      { city: "Ratnagiri", state: "Maharashtra", coordinates: { lat: 16.9902, lng: 73.3120 } },
+      { city: "Shimla", state: "Himachal Pradesh", coordinates: { lat: 31.1048, lng: 77.1734 } },
+      { city: "Indore", state: "Madhya Pradesh", coordinates: { lat: 22.7196, lng: 75.8577 } },
+      { city: "Manali", state: "Himachal Pradesh", coordinates: { lat: 32.2396, lng: 77.1887 } },
+      { city: "Nashik", state: "Maharashtra", coordinates: { lat: 19.9975, lng: 73.7898 } },
+      { city: "Anand", state: "Gujarat", coordinates: { lat: 22.5645, lng: 72.9289 } },
+      { city: "Lucknow", state: "Uttar Pradesh", coordinates: { lat: 26.8467, lng: 80.9462 } },
+      { city: "Kochi", state: "Kerala", coordinates: { lat: 9.9312, lng: 76.2673 } },
+      { city: "Amritsar", state: "Punjab", coordinates: { lat: 31.6340, lng: 74.8723 } },
+      { city: "Nagpur", state: "Maharashtra", coordinates: { lat: 21.1458, lng: 79.0882 } },
+      { city: "Bangalore", state: "Karnataka", coordinates: { lat: 12.9716, lng: 77.5946 } },
+      { city: "Jaipur", state: "Rajasthan", coordinates: { lat: 26.9124, lng: 75.7873 } },
+      { city: "Bhopal", state: "Madhya Pradesh", coordinates: { lat: 23.2599, lng: 77.4126 } },
+      { city: "Hyderabad", state: "Telangana", coordinates: { lat: 17.3850, lng: 78.4867 } },
+      { city: "Jaisalmer", state: "Rajasthan", coordinates: { lat: 26.9157, lng: 70.9083 } },
+      { city: "Mangalore", state: "Karnataka", coordinates: { lat: 12.9141, lng: 74.8560 } },
+      { city: "Aurangabad", state: "Maharashtra", coordinates: { lat: 19.8762, lng: 75.3433 } },
+      { city: "Ooty", state: "Tamil Nadu", coordinates: { lat: 11.4102, lng: 76.6950 } },
+      { city: "Guwahati", state: "Assam", coordinates: { lat: 26.1445, lng: 91.7362 } }
     ];
 
     const farmImages = [

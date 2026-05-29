@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { HiOutlinePlus, HiOutlineTrash, HiOutlineGlobeAlt, HiOutlineInformationCircle } from "react-icons/hi";
 import api from "../utils/api";
+import Map from "../components/Map";
 
 function AddFarm() {
   const navigate = useNavigate();
@@ -12,9 +13,13 @@ function AddFarm() {
     name: "",
     description: "",
     location: {
-      address: "",
+      address: "Plot No 100, Agriculture Zone",
       city: "",
-      state: ""
+      state: "",
+      coordinates: {
+        lat: "",
+        lng: ""
+      }
     },
     totalArea: "",
     soilType: "",
@@ -123,7 +128,7 @@ function AddFarm() {
                 <label className="text-sm font-bold text-gray-700 ml-2">City</label>
                 <input 
                   type="text" required placeholder="e.g. Pune"
-                  className="w-full p-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#1a4d2e] outline-none transition-all"
+                  className="w-full p-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#1a4d2e] outline-none transition-all font-medium"
                   value={farmData.location.city}
                   onChange={(e) => setFarmData({...farmData, location: {...farmData.location, city: e.target.value}})}
                 />
@@ -132,10 +137,62 @@ function AddFarm() {
                 <label className="text-sm font-bold text-gray-700 ml-2">State</label>
                 <input 
                   type="text" required placeholder="e.g. Maharashtra"
-                  className="w-full p-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#1a4d2e] outline-none transition-all"
+                  className="w-full p-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#1a4d2e] outline-none transition-all font-medium"
                   value={farmData.location.state}
                   onChange={(e) => setFarmData({...farmData, location: {...farmData.location, state: e.target.value}})}
                 />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-gray-700 ml-2">Latitude</label>
+                <input 
+                  type="number" step="any" required placeholder="e.g. 18.5204"
+                  className="w-full p-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#1a4d2e] outline-none transition-all font-medium"
+                  value={farmData.location.coordinates.lat}
+                  onChange={(e) => setFarmData({
+                    ...farmData,
+                    location: {
+                      ...farmData.location,
+                      coordinates: { ...farmData.location.coordinates, lat: parseFloat(e.target.value) || "" }
+                    }
+                  })}
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-bold text-gray-700 ml-2">Longitude</label>
+                <input 
+                  type="number" step="any" required placeholder="e.g. 73.8567"
+                  className="w-full p-4 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-[#1a4d2e] outline-none transition-all font-medium"
+                  value={farmData.location.coordinates.lng}
+                  onChange={(e) => setFarmData({
+                    ...farmData,
+                    location: {
+                      ...farmData.location,
+                      coordinates: { ...farmData.location.coordinates, lng: parseFloat(e.target.value) || "" }
+                    }
+                  })}
+                />
+              </div>
+              <div className="md:col-span-2 space-y-2">
+                <label className="text-sm font-bold text-gray-700 ml-2 flex justify-between items-center">
+                  <span>Pin Farm Location on Map</span>
+                  <span className="text-xs text-gray-400 font-semibold uppercase tracking-wider">(Click map to auto-fill lat/lng)</span>
+                </label>
+                <div className="h-[300px] w-full rounded-2xl overflow-hidden shadow-sm border border-gray-200">
+                  <Map 
+                    isEditable={true}
+                    onMapClick={(lat, lng) => {
+                      setFarmData(prev => ({
+                        ...prev,
+                        location: {
+                          ...prev.location,
+                          coordinates: { lat: parseFloat(lat.toFixed(6)), lng: parseFloat(lng.toFixed(6)) }
+                        }
+                      }));
+                    }}
+                    center={[20.5937, 78.9629]}
+                    zoom={5}
+                  />
+                </div>
               </div>
               <div className="md:col-span-2 space-y-2">
                 <label className="text-sm font-bold text-gray-700 ml-2">Farm Images</label>

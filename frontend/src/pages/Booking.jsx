@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { HiOutlineCheckCircle, HiOutlineInformationCircle } from "react-icons/hi";
 import { toast } from "react-toastify";
 import api from "../utils/api";
+import Map from "../components/Map";
 
 function Booking() {
   const { farmId } = useParams();
@@ -79,35 +80,82 @@ function Booking() {
                 <p className="text-gray-500 mt-2">Select a subdivision within {data.farm?.name} to start your cultivation.</p>
               </div>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {data.plots.filter(p => p.status === 'available').map((plot) => (
-                  <button
-                    key={plot._id}
-                    onClick={() => setSelectedPlot(plot)}
-                    className={`p-8 rounded-[30px] border-2 transition-all text-left relative group ${selectedPlot?._id === plot._id ? 'border-[#1a4d2e] bg-green-50 shadow-xl shadow-green-900/10' : 'border-gray-50 bg-white hover:border-green-200'}`}
+              <div className="flex flex-col lg:flex-row gap-10 items-start">
+                {/* Left Column: Plots Selection */}
+                <div className="w-full lg:w-7/12 space-y-8">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {data.plots.filter(p => p.status === 'available').map((plot) => (
+                      <button
+                        key={plot._id}
+                        type="button"
+                        onClick={() => setSelectedPlot(plot)}
+                        className={`p-6 rounded-[24px] border-2 transition-all text-left relative group cursor-pointer ${selectedPlot?._id === plot._id ? 'border-[#1a4d2e] bg-green-50/50 shadow-md' : 'border-gray-100 bg-white hover:border-green-200'}`}
+                      >
+                        <span className="block text-lg font-black text-[#1a4d2e] mb-1">{plot.plotNumber}</span>
+                        <div className="flex justify-between items-end">
+                          <div>
+                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Size</p>
+                            <p className="text-sm font-bold text-gray-700">{plot.size} Acre</p>
+                          </div>
+                          <div className="text-right">
+                            <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Seasonal Rent</p>
+                            <p className="text-sm font-bold text-orange-600">${plot.pricePerSeason}</p>
+                          </div>
+                        </div>
+                        {selectedPlot?._id === plot._id && <HiOutlineCheckCircle className="absolute top-4 right-4 text-xl text-[#1a4d2e]" />}
+                      </button>
+                    ))}
+                  </div>
+                  
+                  <button 
+                    type="button"
+                    onClick={() => selectedPlot ? setStep(2) : toast.info("Please select a plot first")} 
+                    className="btn-primary w-full py-4 text-lg shadow-lg shadow-green-900/20 cursor-pointer"
                   >
-                    <span className="block text-xl font-black text-[#1a4d2e] mb-2">{plot.plotNumber}</span>
-                    <div className="flex justify-between items-end">
-                      <div>
-                        <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Size</p>
-                        <p className="text-lg font-bold text-gray-700">{plot.size} Acre</p>
+                    Continue to Summary
+                  </button>
+                </div>
+
+                {/* Right Column: Location Map and details */}
+                <div className="w-full lg:w-5/12 space-y-6">
+                  <div className="bg-gray-50/80 p-6 rounded-[30px] border border-gray-100 shadow-sm">
+                    <h3 className="text-md font-black text-[#1a4d2e] uppercase tracking-wider mb-4">Farm Location</h3>
+                    <div className="h-[250px] w-full rounded-2xl overflow-hidden mb-4 shadow-sm border border-gray-200/50">
+                      {data.farm?.location?.coordinates?.lat ? (
+                        <Map 
+                          markers={[{
+                            lat: data.farm.location.coordinates.lat,
+                            lng: data.farm.location.coordinates.lng,
+                            popupContent: `<strong style="color: #1a4d2e;">${data.farm.name}</strong><br/>${data.farm.location.city}, ${data.farm.location.state}`
+                          }]}
+                          center={[data.farm.location.coordinates.lat, data.farm.location.coordinates.lng]}
+                          zoom={13}
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gray-100 flex flex-col items-center justify-center text-gray-400 text-sm gap-2">
+                          <span>📍</span>
+                          <span>No location coordinates available</span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    <div className="space-y-3 text-xs font-semibold">
+                      <div className="flex justify-between py-1.5 border-b border-gray-200/50">
+                        <span className="text-gray-500 uppercase tracking-wider">Address</span>
+                        <span className="text-primary font-bold text-right max-w-[180px] truncate">{data.farm?.location?.address || "N/A"}</span>
                       </div>
-                      <div className="text-right">
-                        <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Seasonal Rent</p>
-                        <p className="text-lg font-bold text-orange-600">${plot.pricePerSeason}</p>
+                      <div className="flex justify-between py-1.5 border-b border-gray-200/50">
+                        <span className="text-gray-500 uppercase tracking-wider">Soil Type</span>
+                        <span className="text-primary font-bold">{data.farm?.soilType || "N/A"}</span>
+                      </div>
+                      <div className="flex justify-between py-1.5">
+                        <span className="text-gray-500 uppercase tracking-wider">Total Area</span>
+                        <span className="text-primary font-bold">{data.farm?.totalArea || "N/A"} Acres</span>
                       </div>
                     </div>
-                    {selectedPlot?._id === plot._id && <HiOutlineCheckCircle className="absolute top-4 right-4 text-2xl text-[#1a4d2e]" />}
-                  </button>
-                ))}
+                  </div>
+                </div>
               </div>
-              
-              <button 
-                onClick={() => selectedPlot ? setStep(2) : toast.info("Please select a plot first")} 
-                className="btn-primary w-full py-5 text-xl shadow-xl shadow-green-900/20"
-              >
-                Continue to Summary
-              </button>
             </div>
           )}
 

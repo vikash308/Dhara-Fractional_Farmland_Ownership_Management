@@ -3,7 +3,7 @@ import { HiOutlineLocationMarker, HiOutlineTrendingUp } from "react-icons/hi";
 import { BsArrowRight } from "react-icons/bs";
 import { getAssetUrl } from "../utils/api";
 
-function FarmCard({ FarmDetails }) {
+function FarmCard({ FarmDetails, gridClass }) {
   if (!FarmDetails || FarmDetails.length === 0) {
     return (
       <div className="text-center py-20 glass-card rounded-2xl mx-auto max-w-2xl">
@@ -13,7 +13,7 @@ function FarmCard({ FarmDetails }) {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div className={gridClass || "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"}>
       {FarmDetails.map((val, index) => {
         const name = val.name || "Unnamed Farm";
         const location = val.location ? `${val.location.city}, ${val.location.state}` : "Location TBD";
